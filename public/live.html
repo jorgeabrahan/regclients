@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/live.css">
+    <link rel="icon" href="img/live.png">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <script src="https://www.gstatic.com/firebasejs/8.5.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.5.0/firebase-firestore.js"></script>
+
+    <title>Live en progreso</title>
+</head>
+<body>
+    <header class="header">
+        <div class="center">
+            <a class="header__name" href="index.html">
+                <span class="material-icons header__icon">smart_display</span>
+                <span>Lives tool</span>
+            </a>
+        </div>
+    </header>
+    <main class="center">
+        <form class="form" id="frmClientData">
+            <div class="form__inputs">
+                <input class="input" list="clients" name="clientName" id="clientName" placeholder="Nombre del cliente" maxlength="20" autocomplete="off">
+                <datalist id="clients" name="clients">
+                </datalist>
+                <input class="input" type="text" name="price" id="price" placeholder="Costo de la prenda" autocomplete="off">
+            </div>
+            <button class="btn form__btn"><span class="material-icons">add</span>Agregar</button>
+        </form>
+        <section class="table print-container">
+            <p class="table__date" id="dateLive">00 de MMMMM del YYYY</p>
+            <header class="table__header">
+                <p class="table__title">Nombre (<span id="clientsAmount" class="table__amount">0</span>)</p>
+                <p class="table__title">Total</p>
+            </header>
+            <div class="table__content" id="clientsHtml">
+            </div>
+            <p class="table__total">Total HNL <span id="totalLive">0.00</span></p>
+        </section>
+        <section class="settings">
+            <button class="btn btn-shortcuts" id="btnShortcuts"><span class="material-icons">keyboard</span>Atajos</button>
+            <button class="btn" id="btnDelete"><span class="material-icons">delete_forever</span>Limpiar</button>
+            <button class="btn" id="btnPrint"><span class="material-icons">print</span>Imprimir</button>
+            <button class="btn d-none" id="btnExit"><span class="material-icons">cancel</span>Salir</button>
+            <button class="btn" id="btnSave"><span class="material-icons">save</span>Guardar</button>
+        </section>
+    </main>
+    <div class="modal d-none" id="modal">
+        <div class="modal__content">
+            <div class="modal__icon"><span class="material-icons" onclick="modal.classList.add('d-none')">close</span></div>
+            <h2 class="modal__title" id="modalTitle"></h2>
+            <p class="modal__description" id="modalDescription"></p>    
+        </div>
+    </div>
+    <div class="modal d-none" id="modalShortcuts">
+        <div class="modal__content shortcuts__content">
+            <div class="modal__icon"><span class="material-icons" onclick="modalShortcuts.classList.add('d-none')">close</span></div>
+            <div class="shortcuts">
+                <div class="shortcut">
+                    <div class="shortcut__keys">
+                        <img class="shortcut__image" src="img/alt.png" alt="">
+                        <p>+</p>
+                        <img class="shortcut__image" src="img/keyQ.png" alt="">
+                    </div>
+                    <p class="shortcut__details">Nombre cliente</p>
+                </div>
+                <div class="shortcut">
+                    <div class="shortcut__keys">
+                        <img class="shortcut__image" src="img/alt.png" alt="">
+                        <p>+</p>
+                        <img class="shortcut__image" src="img/keyW.png" alt="">
+                    </div>
+                    <p class="shortcut__details">Costo de prenda</p>
+                </div>
+                <div class="shortcut">
+                    <div class="shortcut__keys">
+                        <img class="shortcut__image" src="img/alt.png" alt="">
+                        <p>+</p>
+                        <img class="shortcut__image" src="img/keyC.png" alt="">
+                    </div>
+                    <p class="shortcut__details">Limpiar tabla</p>
+                </div>
+                <div class="shortcut">
+                    <div class="shortcut__keys">
+                        <img class="shortcut__image" src="img/alt.png" alt="">
+                        <p>+</p>
+                        <img class="shortcut__image" src="img/keyG.png" alt="">
+                    </div>
+                    <p class="shortcut__details">Guardar live</p>
+                </div>
+                <div class="shortcut">
+                    <div class="shortcut__keys">
+                        <img class="shortcut__image" src="img/ctrl.png" alt="">
+                        <p>+</p>
+                        <img class="shortcut__image" src="img/keyP.png" alt="">
+                    </div>
+                    <p class="shortcut__details">Imprimir tabla</p>
+                </div>
+                <div class="shortcut">
+                    <div class="shortcut__keys">
+                        <img class="shortcut__image" src="img/ctrl.png" alt="">
+                        <p>+</p>
+                        <img class="shortcut__image" src="img/keyF.png" alt="">
+                    </div>
+                    <p class="shortcut__details">Buscar cliente</p>
+                </div>
+            </div>
+            <div class="shortcuts__toggle">
+                <label class="shortcuts__label">
+                    Habilitar atajos
+                    <input type="checkbox" id="shortcutsToggle">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="modal modal-edit d-none" id="modalEdit">
+        <form class="modal__content edit__content" id="frmEdit">
+            <label for="nombre" class="edit__label">Nombre cliente:</label>
+            <input type="text" class="input edit__input" autocomplete="off" name="nombre" id="nameE" placeholder="Ej. Luis Ramirez">
+            <label for="articulos" class="edit__label">Cant. articulos:</label>
+            <input type="text" class="input edit__input" autocomplete="off" name="articulos" id="articlesE" placeholder="Ej. 5">
+            <label for="total" class="edit__label">Total cliente:</label>
+            <input type="text" class="input edit__input" autocomplete="off" name="total" id="totalE" placeholder="Ej. 450">
+            <div class="edit__buttons">
+                <button class="btn"><span class="material-icons">save</span>Guardar</button>
+                <button class="btn edit__cancel-btn" id="btnEditCancel" type="button">
+                    <span class="material-icons">block</span>Cancelar
+                </button>
+            </div>
+        </form>
+    </div>
+</body>
+<script src="js/live.js" type="module" defer></script>
+</html>

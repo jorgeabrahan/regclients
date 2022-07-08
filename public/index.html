@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="img/live.png">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <script src="https://www.gstatic.com/firebasejs/8.5.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.5.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.5.0/firebase-auth.js"></script>
+
+    <title>Lives-tool inicio</title>
+</head>
+<body>
+    <header class="header">
+        <div class="center header__flex">
+            <a class="header__name" href="index.html">
+                <span class="material-icons header__icon">smart_display</span>
+                <span>Lives tool</span>
+            </a>
+            <div class="settings">
+                <button class="btn" id="btnLogout"><span class="material-icons">logout</span>Cerrar sesión</button>
+                <button class="btn" id="btnNewLive"><span class="material-icons">add</span>Nuevo live</button>
+            </div>
+        </div>
+    </header>
+    <main class="center">
+        <section class="default d-none" id="noLivesMsg">
+            <img class="default__image" src="svg/lives.svg" alt="Create new live image">
+            <p class="default__text">Los lives que hagas apareceran aqui.</p>
+        </section>
+        <section class="lives" id="livesCnt">
+        </section>
+        <div id="livesOpts" class="d-none">
+            <section class="table print-container d-none" id="clientsTable">
+                <header class="table__header">
+                    <p class="table__title">Nombre (<span id="weekClientsAmount" class="table__amount">0</span>)</p>
+                    <p class="table__title">Total</p>
+                </header>
+                <div class="table__content" id="weekClientsTable">
+                </div>
+            </section>
+            <div id="totalCnt">
+                <p class="lives__total">Total semana: HNL <span id="weekTotal">0.00</span></p>
+            </div>
+            <section class="settings">
+                <button class="btn d-none" id="printWeekTable"><span class="material-icons">print</span>Imprimir tabla</button>
+                <button class="btn" id="toggleView"><span class="material-icons">table_rows</span>Cambiar vista</button>
+                <button class="btn" id="livesDelete"><span class="material-icons">delete_forever</span>Limpiar</button>
+            </section>
+        </div>
+    </main>
+    <div class="login">
+        <form class="login__form" id="frmLogin">
+            <input class="input" type="email" name="mail" id="mail" placeholder="Ingrese su correo">
+            <input class="input" type="password" name="pass" id="pass" placeholder="Ingrese su contraseña">
+            <p class="login__msg" id="msgLogin"></p>
+            <button class="login__submit btn"><span class="material-icons">login</span>Iniciar sesión</button>
+        </form>
+    </div>
+</body>
+<script src="js/login.js" type="module" defer></script>
+</html>

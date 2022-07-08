@@ -1,0 +1,209 @@
+.form {
+    margin-bottom: 1rem;
+}
+
+.form__inputs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: .5rem;
+}
+
+@media (max-width: 600px) {
+    .form__inputs {
+        flex-wrap: wrap;
+    }
+}
+
+
+.form__btn {
+    margin-left: auto;
+    background-color: #282F44;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 0 .5rem;
+    background-color: #000000a8;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+}
+
+.modal__content {
+    background-color: #1A181B;
+    color: #fff;
+    width: 100%;
+    max-width: 400px;
+    padding: 1rem;
+    border-radius: 5px;
+}
+
+.modal__icon {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.modal__icon span {
+    cursor: pointer;
+    font-weight: 800;
+}
+
+.modal__icon span {
+    font-size: 35px;
+}
+
+.modal-edit {
+    z-index: 100;
+}
+
+.edit__content {
+    display: flex;
+    flex-direction: column;
+}
+
+.edit__label {
+    font-size: 1em;
+    font-weight: bold;
+}
+
+.edit__buttons {
+    display: flex;
+    gap: .5rem;
+    justify-content: flex-end;
+}
+
+.edit__input {
+    margin-bottom: 1rem;
+}
+
+.edit__cancel-btn {
+    background-color: #C1292E;
+}
+
+.d-none {
+    display: none;
+}
+
+@media (max-width: 1024px) {
+    .btn-shortcuts {
+        display: none;
+    }
+}
+
+
+.shortcuts__content {
+    background-color: rgba(106, 106, 106, 0.974);
+    color: #1A181B;
+    max-width: 1024px;
+    padding: .5rem;
+}
+
+.shortcuts__content .modal__icon {
+    color: black;
+    margin-bottom: 1rem;
+}
+
+.shortcuts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+}
+
+.shortcuts__toggle {
+    text-align: right;
+    padding: 0 .3em;
+}
+
+.shortcuts__label {
+    position: relative;
+    padding-right: 2rem;
+    color: black;
+    cursor: pointer;
+    font-size: 1.3em;
+    font-weight: bold;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.shortcuts__label input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    position: absolute;
+    border-radius: 5px;
+    top: 0;
+    right: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #eee;
+}
+
+.shortcuts__label:hover input~.checkmark {
+    background-color: #ccc;
+}
+
+.shortcuts__label input:checked~.checkmark {
+    background-color: #1A181B;
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.shortcuts__label input:checked~.checkmark:after {
+    display: block;
+}
+
+.shortcuts__label .checkmark:after {
+    left: 9px;
+    top: 4px;
+    width: 7px;
+    height: 15px;
+    border: solid white;
+    border-width: 0 4px 4px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+.shortcut {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    align-items: center;
+}
+
+.shortcut__keys {
+    display: flex;
+    align-items: center;
+    gap: .2em;
+    font-size: 2em;
+}
+
+.shortcut__image {
+    max-width: 50px;
+}
+
+.shortcut__details {
+    padding: 0.5em;
+    background-color: #1A181B;
+    color: white;
+    border-radius: 5px;
+    min-width: 150px;
+    text-align: center;
+}
