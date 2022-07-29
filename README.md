@@ -16,3 +16,5 @@ I'm working in a way to register an account after paying a month plan and also i
 Solved code errors
 ## 1.1.1 
 Amount input implemented to add multiple elements in registry and in the total. 
+## 1.1.2
+Login code problem solved and background of tables that can be printed was removed because of problems on safari.
