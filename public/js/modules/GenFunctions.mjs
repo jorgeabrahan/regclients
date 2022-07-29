@@ -1,5 +1,5 @@
 'use strict';
-import { date } from './GenVars.mjs';
+import * as globalVars from './globalVars.mjs';
 
 export const makeId = () => {
     let ID = "";
@@ -25,11 +25,12 @@ export const allowJustNumbers = (target) => {
 
 export const formatTime = time => time.toString().length === 1 ? `0${time}` : time;
 
-const monthDay = date.getDate();
-const weekDays = ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'];
-const weekDay = weekDays[date.getDay()]; 
-const year = date.getFullYear();
-const months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
-const month = months[date.getMonth()];
 
-export const getCompleteDate = () => `${weekDay} ${monthDay} de ${month} del ${year}`;
+export const getCompleteDate = () => {
+    const weekDay = globalVars.WEEK_DAYS[globalVars.DATE.getDay()]; 
+    const year = globalVars.DATE.getFullYear();
+    const monthDay = globalVars.DATE.getDate();
+    const month = globalVars.MONTHS[globalVars.DATE.getMonth()];
+
+    return `${weekDay} ${monthDay} de ${month} del ${year}`
+};
