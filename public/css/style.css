@@ -156,9 +156,19 @@ select {
     gap: 0.5rem;
     opacity: 0;
     transition: opacity 300ms ease;
+    pointer-events: none;
 }
-.table__row:hover > .row__btns {
+
+.row__btns--show {
     opacity: 1;
+    pointer-events: all;
+}
+
+@media (min-width: 1024px) { /* En computadoras */
+    .table__row:hover > .row__btns {
+        opacity: 1;
+        pointer-events: all;
+    }
 }
 
 @media (min-width: 600px) {
@@ -184,7 +194,7 @@ select {
 .settings {
     display: flex;
     gap: 0.5em;
-    justify-content: flex-end;
+    margin-bottom: 1rem;
 }
 
 @media (max-width: 768px) {

@@ -13,15 +13,11 @@ import {
 } from "./ClientsDOM.mjs";
 
 /* Getters de informacion del arreglo de clientes */
-export const getClientInfoByName = (clientName) =>
-    clientsArr.find((element) => element.name == clientName);
-export const getClientInfoById = (clientId) =>
-    clientsArr.find((element) => element.clientId == clientId);
+export const getClientInfoByName = (clientName) => clientsArr.find((element) => element.name == clientName);
+export const getClientInfoById = (clientId) => clientsArr.find((element) => element.clientId == clientId);
 /* Getters de indice del arreglo de clientes */
-export const getClientIndexByName = (clientName) =>
-    clientsArr.findIndex((element) => element.name == clientName);
-export const getClientIndexById = (clientId) =>
-    clientsArr.findIndex((element) => element.clientId == clientId);
+export const getClientIndexByName = (clientName) => clientsArr.findIndex((element) => element.name == clientName);
+export const getClientIndexById = (clientId) => clientsArr.findIndex((element) => element.clientId == clientId);
 /* Remocer elemento del arreglo de clientes */
 export const removeClientFromArr = (index) => clientsArr.splice(index, 1);
 
@@ -34,10 +30,7 @@ export const createOption = (clientName, id) => {
 
 const shwRegistry = (clientId) => {
     const clientInfo = getClientInfoById(clientId);
-    showModal(
-        `Registro de ${clientInfo.name}`,
-        `${clientInfo.registry.toString().replace(/,/g, "\t")}`
-    );
+    showModal(`Registro de ${clientInfo.name}`, `${clientInfo.registry.toString().replace(/,/g, "\t")}`);
 };
 const shwEditModal = (clientId) => {
     //Se obtiene la informacion del cliente
@@ -77,21 +70,22 @@ export const createHtml = (id, clientName, total, articles) => {
         </div>
     `;
 
-    /* Se establecen los eventos de los botones */
-    divClient
-        .getElementsByClassName("shwRegistry")[0]
-        .addEventListener("click", () => shwRegistry(id));
-    divClient
-        .getElementsByClassName("shwEditModal")[0]
-        .addEventListener("click", () => shwEditModal(id));
-    divClient
-        .getElementsByClassName("deleteThis")[0]
-        .addEventListener("click", () => {
-            if (!confirm(`Seguro que desea eliminar el cliente ${clientName}`))
-                return;
-            deleteOption(id);
-            deleteThis(id);
+    //Si es desde una tablet o celular
+    if (document.body.clientWidth < 1024) {
+        divClient.addEventListener("click", () => {
+            //Al dar click al cliente
+            divClient.querySelector(".row__btns").classList.toggle("row__btns--show"); //Se muestran los botones
         });
+    }
+
+    /* Se establecen los eventos de los botones */
+    divClient.getElementsByClassName("shwRegistry")[0].addEventListener("click", () => shwRegistry(id));
+    divClient.getElementsByClassName("shwEditModal")[0].addEventListener("click", () => shwEditModal(id));
+    divClient.getElementsByClassName("deleteThis")[0].addEventListener("click", () => {
+        if (!confirm(`Seguro que desea eliminar el cliente ${clientName}`)) return;
+        deleteOption(id);
+        deleteThis(id);
+    });
 
     return divClient;
 };
@@ -115,11 +109,5 @@ export const emptyClients = () => {
 };
 
 export const loadClientsFromArr = () => {
-    for (let client of clientsArr)
-        createNewClient(
-            client.clientId,
-            client.name,
-            client.total,
-            client.articles
-        );
+    for (let client of clientsArr) createNewClient(client.clientId, client.name, client.total, client.articles);
 };

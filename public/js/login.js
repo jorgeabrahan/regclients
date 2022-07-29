@@ -21,18 +21,15 @@ const noLivesMsg = document.getElementById("noLivesMsg");
 let fbLives = { lives: [] };
 
 const createClientsHtml = (clients) => {
-    const clientsHtml = [];
-    for (let client of clients) {
-        clientsHtml.push(`
-            <p>
-                <span class="bold">${client.name}</span> 
-                <span>HNL ${globalVars.FORMATTER.format(
-                    Number(client.total)
-                )}</span>
-            </p>
-            `);
-    }
-    return clientsHtml.toString().replace(/>,</g, ">\n<");
+    const allClients = clients.map(
+        (client) => `
+        <p>
+            <span class="bold">${client.name}</span> 
+            <span>HNL ${globalVars.FORMATTER.format(Number(client.total))}</span>
+        </p>
+        `
+    );
+    return allClients.join(" ");
 };
 
 document.getElementById("btnNewLive").addEventListener("click", () => {
@@ -45,10 +42,7 @@ document.getElementById("btnLogout").addEventListener("click", () => {
 });
 const editLive = (id) => {
     localStorage.setItem("Edit", "on");
-    localStorage.setItem(
-        "LiveToEdit",
-        JSON.stringify(fbLives.lives.find((element) => element.liveId == id))
-    );
+    localStorage.setItem("LiveToEdit", JSON.stringify(fbLives.lives.find((element) => element.liveId == id)));
     open("live.html", "_self");
 };
 
@@ -62,33 +56,21 @@ const createLiveHtml = (liveData) => {
                 <h2>${liveData.date}</h2>
                 <div class="live__group">
                     <h3>Tiempo</h3>
-                    <p class="flex"><span class="bold">Hora inicio:</span> <span>${
-                        liveData.startTime
-                    }</span></p>
-                    <p class="flex"><span class="bold">Hora finalización:</span> <span>${
-                        liveData.time
-                    }</span></p>
+                    <p class="flex"><span class="bold">Hora inicio:</span> <span>${liveData.startTime}</span></p>
+                    <p class="flex"><span class="bold">Hora finalización:</span> <span>${liveData.time}</span></p>
                 </div>
                 <div class="live__group">
                     <h3>Cantidad</h3>
-                    <p class="flex"><span class="bold">Compradores:</span> <span>${
-                        liveData.clientsAmount
-                    }</span></p>
-                    <p class="flex"><span class="bold">Artículos:</span> <span>${
-                        liveData.totalArticles
-                    }</span></p>
+                    <p class="flex"><span class="bold">Compradores:</span> <span>${liveData.clientsAmount}</span></p>
+                    <p class="flex"><span class="bold">Artículos:</span> <span>${liveData.totalArticles}</span></p>
                 </div>
                 <div class="live__group">
                     <h3>Mejor comprador</h3>
-                    <p class="flex"><span class="bold">Nombre:</span> <span>${
-                        liveData.bestBuyer.name
-                    }</span></p>
+                    <p class="flex"><span class="bold">Nombre:</span> <span>${liveData.bestBuyer.name}</span></p>
                     <p class="flex"><span class="bold">Total:</span> <span>HNL <span>${globalVars.FORMATTER.format(
                         Number(liveData.bestBuyer.total)
                     )}</span></span></p>
-                    <p class="flex"><span class="bold">Articulos:</span> <span>${
-                        liveData.bestBuyer.articles
-                    }</span></p>
+                    <p class="flex"><span class="bold">Articulos:</span> <span>${liveData.bestBuyer.articles}</span></p>
                 </div>
                 <p class="live__total flex"><span>Total:</span> <span>HNL <span>${globalVars.FORMATTER.format(
                     liveData.total
@@ -106,9 +88,7 @@ const createLiveHtml = (liveData) => {
         </div>
     `;
     /* Al dar click en editar */
-    liveCnt
-        .getElementsByClassName("edit-btn")[0]
-        .addEventListener("click", () => editLive(liveCnt.id));
+    liveCnt.getElementsByClassName("edit-btn")[0].addEventListener("click", () => editLive(liveCnt.id));
     return liveCnt;
 };
 
@@ -178,11 +158,8 @@ frmLogin.addEventListener("submit", (e) => {
         })
         .catch((err) => {
             const errCode = err.code.split("/")[1];
-            if (errCode == "user-not-found")
-                msgLogin.innerText =
-                    "El usuario no existe o el correo es incorrecto";
-            if (errCode == "wrong-password")
-                msgLogin.innerText = "La contraseña es incorrecta";
+            if (errCode == "user-not-found") msgLogin.innerText = "El usuario no existe o el correo es incorrecto";
+            if (errCode == "wrong-password") msgLogin.innerText = "La contraseña es incorrecta";
 
             e.target.style.pointerEvents = "all";
         });
@@ -213,10 +190,7 @@ const printWeekTable = document.getElementById("printWeekTable");
 printWeekTable.addEventListener("click", () => {
     if (confirm("¿Desea mostrar el total de la semana en la tabla?"))
         weekClientsTable.appendChild(weekTotal.parentElement);
-    else
-        document
-            .getElementById("totalCnt")
-            .appendChild(weekTotal.parentElement);
+    else document.getElementById("totalCnt").appendChild(weekTotal.parentElement);
     window.print();
 });
 /* --------------------------------------------------- */
@@ -242,9 +216,7 @@ const sortWeekClients = () => {
 const mergeClients = (clients) => {
     for (let currentClient of clients) {
         //Se comprueba si el cliente ya existe en los nuevos clientes
-        const clientFromWeek = weekClients.find(
-            (weekClient) => currentClient.name == weekClient.name
-        );
+        const clientFromWeek = weekClients.find((weekClient) => currentClient.name == weekClient.name);
 
         if (clientFromWeek == undefined) {
             weekClients.push({
@@ -257,10 +229,7 @@ const mergeClients = (clients) => {
 
         clientFromWeek.total += Number(currentClient.total);
         clientFromWeek.articles += Number(currentClient.articles);
-        clientFromWeek.registry = [
-            ...clientFromWeek.registry,
-            ...currentClient.registry,
-        ];
+        clientFromWeek.registry = [...clientFromWeek.registry, ...currentClient.registry];
     }
 };
 const mergeClientsLive = () => {
@@ -269,9 +238,7 @@ const mergeClientsLive = () => {
     /* Se muestra el arreglo unificado como tabla en la interfaz */
     const weekClientsFrgmnt = document.createDocumentFragment();
     for (let client of weekClients)
-        weekClientsFrgmnt.appendChild(
-            createWeekClientsHtml(client.name, client.articles, client.total)
-        );
+        weekClientsFrgmnt.appendChild(createWeekClientsHtml(client.name, client.articles, client.total));
     weekClientsTable.appendChild(weekClientsFrgmnt);
     /* Se muestra la cantidad de clientes */
     document.getElementById("weekClientsAmount").innerText = weekClients.length;

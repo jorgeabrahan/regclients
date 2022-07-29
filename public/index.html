@@ -38,6 +38,19 @@
             </div>
         </header>
         <main class="center">
+            <section class="settings">
+                <button class="btn" id="toggleView">
+                    <span class="material-icons">view_stream</span> / <span class="material-icons">view_list</span>
+                    Cambiar vista
+                </button>
+                <button class="btn d-none" id="printWeekTable">
+                    <span class="material-icons">print</span>Imprimir tabla
+                </button>
+                <button class="btn" id="livesDelete">
+                    <span class="material-icons">delete_forever</span
+                    >Eliminar todo
+                </button>
+            </section>
             <section class="default d-none" id="noLivesMsg">
                 <img
                     class="default__image"
@@ -68,19 +81,6 @@
                         Total semana: HNL <span id="weekTotal">0.00</span>
                     </p>
                 </div>
-                <section class="settings">
-                    <button class="btn d-none" id="printWeekTable">
-                        <span class="material-icons">print</span>Imprimir tabla
-                    </button>
-                    <button class="btn" id="toggleView">
-                        <span class="material-icons">table_rows</span>Cambiar
-                        vista
-                    </button>
-                    <button class="btn" id="livesDelete">
-                        <span class="material-icons">delete_forever</span
-                        >Limpiar
-                    </button>
-                </section>
             </div>
         </main>
         <div class="login">
