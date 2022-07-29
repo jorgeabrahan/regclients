@@ -10,3 +10,9 @@ email: test@gmail.com
 password: thisIsForTestPurposesOnly
 
 I'm working in a way to register an account after paying a month plan and also in a documentation for those people who need help.
+
+
+## 1.0.1 
+Solved code errors
+## 1.1.1 
+Amount input implemented to add multiple elements in registry and in the total. 
