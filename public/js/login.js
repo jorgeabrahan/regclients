@@ -122,6 +122,26 @@ const loadContentFromFb = (userId) => {
             /* ------------------------------------- */
 
             mergeClientsLive(); //Se crea la tabla unificando todos los clientes
+
+            const weekDay = globalVars.WEEK_DAYS[globalVars.DATE.getDay()];
+            if (weekDay === "Lunes" && fbLives.lives.length > 0) {
+                let existsLiveFromPastWeek = false;
+                for (live of fbLives.lives) {
+                    const liveDay = live.date.split(" ")[0];
+                    const dayIndex = globalVars.WEEK_DAYS.findIndex((day) => liveDay === day);
+                    //If theres a live from past week
+                    if (dayIndex > 1 || dayIndex === 0) {
+                        existsLiveFromPastWeek = true;
+                        break;
+                    }
+                }
+
+                if (existsLiveFromPastWeek) {
+                    alert(
+                        "¡La semana ha terminado! para comenzar una nueva elimina los lives de la semana dando clic en el boton 'Eliminar todo'"
+                    );
+                }
+            }
         })
         .catch((err) => {
             const errMsg = `Error al leer la base de datos, intente en otro momento con una mejor conexion a internet.\nError: ${err}`;

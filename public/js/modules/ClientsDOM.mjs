@@ -25,15 +25,13 @@ export const saveClientsLS = () => {
 export const updateLiveTotal = () => {
     let clientsTotal = 0;
     for (let client of clientsArr) clientsTotal += Number(client.total);
-    document.getElementById("totalLive").innerText =
-        globalVars.FORMATTER.format(clientsTotal);
+    document.getElementById("totalLive").innerText = globalVars.FORMATTER.format(clientsTotal);
     return clientsTotal;
 };
 /* ------------------------------------ */
 
 /* Actualizar la cantidad de clientes */
-export const updateClientsAmount = () =>
-    (document.getElementById("clientsAmount").innerText = clientsArr.length);
+export const updateClientsAmount = () => (document.getElementById("clientsAmount").innerText = clientsArr.length);
 /* ---------------------------------- */
 
 /* Actualizar todo y guardar el arreglo en el almacenamiento local */
@@ -46,7 +44,7 @@ export const updateAndSave = () => {
 
 /* Modal para mostrar informacion o mensajes de error */
 export const showModal = (title, description) => {
-    document.getElementById("modalTitle").innerText = title;
+    document.getElementById("modalTitle").textContent = title;
     document.getElementById("modalDescription").innerText = description;
     document.getElementById("modal").classList.remove("d-none");
 };

@@ -83,9 +83,7 @@ const checkForPrevClients = () => {
     }
 
     //Si no habian elementos en el almacenamiento local
-    const time = `${impFuncs.formatTime(DATE.getHours())}:${impFuncs.formatTime(
-        DATE.getMinutes()
-    )}:${impFuncs.formatTime(DATE.getSeconds())}`;
+    const time = `${impFuncs.formatTime(DATE.getHours())}:${impFuncs.formatTime(DATE.getMinutes())}`;
     localStorage.setItem("TimeStart", time);
     /* Se muestra y almacena la fecha del live */
     const currentDate = impFuncs.getCompleteDate();
