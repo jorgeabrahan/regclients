@@ -19,4 +19,6 @@ Amount input implemented to add multiple elements in registry and in the total.
 ## 1.1.2
 Login code problem solved and background of tables that can be printed was removed because of problems on safari.
 ## 1.2.3
-Client options buttons are now shown when clicking the client on tablets and cellphones and the input for the client name is formated before adding the client, now you can only add two names or one name and one surname, the first letter of each name is now capitalized and the others are set to lower case. The view of clients on the dashboard was corrected, the position of the buttons to toggle view, print table and delete everything has changed on the dashboard and was placed at the beginning.
+Client options buttons are now shown when clicking the client on tablets and cellphones and the input for the client name is formated before adding the client, now you can only add two names or one name and one surname, and you have to add at least the two names, only one won't be accepted. 
+
+The first letter of each name is now capitalized and the others are set to lower case. The view of clients on the dashboard was corrected, the position of the buttons to toggle view, print table and delete everything has changed on the dashboard and was placed at the top for accesibility.

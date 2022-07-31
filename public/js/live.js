@@ -108,12 +108,38 @@ frmEdit.articlesE.addEventListener("input", ({ target }) => impFuncs.allowJustNu
 frmEdit.totalE.addEventListener("input", ({ target }) => impFuncs.allowJustNumbers(target));
 /* ------------------------------------------------------------- */
 
+const formatNameCorrectly = (string) => {
+    const words = string.split(" ");
+    for (let word in words) {
+        words[word] = words[word].charAt(0).toUpperCase() + words[word].slice(1).toLowerCase();
+    }
+    return words.join(" ");
+};
+
 /* Al editar un cliente */
 frmEdit.addEventListener("submit", (e) => {
     e.preventDefault();
-    const editNameVal = frmEdit.nameE.value.trim();
+    let editNameVal = frmEdit.nameE.value.trim();
     const editArticlesVal = Number(frmEdit.articlesE.value.trim());
     const editTotalVal = Number(frmEdit.totalE.value.trim());
+
+    if (editNameVal.split(" ").length > 2) {
+        showModal(
+            "Error al modificar",
+            "Asegurate de solo agregar al cliente con un nombre y un apellido o dos nombres, pero no más."
+        );
+        return;
+    }
+
+    if (editNameVal.split(" ").length < 2) {
+        showModal(
+            "Error al modificar",
+            "Asegurate de agregar dos nombres o un nombre y un apellido al cliente, solo escribir un nombre no es valido."
+        );
+        return;
+    }
+
+    editNameVal = formatNameCorrectly(editNameVal);
 
     if (editNameVal === "" || editArticlesVal <= 0 || editTotalVal <= 0) {
         showModal(
@@ -190,14 +216,6 @@ frmClientData.price.addEventListener("input", ({ target, data }) => {
     frmClientData.amount.removeAttribute("disabled");
 });
 
-const formatNameCorrectly = (string) => {
-    const words = string.split(" ");
-    for (let word in words) {
-        words[word] = words[word].charAt(0).toUpperCase() + words[word].slice(1).toLowerCase();
-    }
-    return words.join(" ");
-};
-
 /* Al agregar un cliente */
 frmClientData.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -210,6 +228,14 @@ frmClientData.addEventListener("submit", (e) => {
         showModal(
             "Error al agregar",
             "Asegurate de solo agregar al cliente con un nombre y un apellido o dos nombres, pero no más."
+        );
+        return;
+    }
+
+    if (clientNameVal.split(" ").length < 2) {
+        showModal(
+            "Error al agregar",
+            "Asegurate de agregar dos nombres o un nombre y un apellido al cliente, solo escribir un nombre no es valido."
         );
         return;
     }
