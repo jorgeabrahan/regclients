@@ -1,24 +1,10 @@
 "use strict";
 
 import * as firebase from "./modules/firebase.mjs";
-import { DATE, FORMATTER } from "./modules/globalVars.mjs";
-
-import {
-    updateAndSave,
-    saveClientsLS,
-    showModal,
-    clientsHtmlCnt,
-    frmEdit,
-    modalEdit,
-    clientsArr,
-    setClientsArr,
-    userIdLS,
-    clientsDataList,
-    updateClientsAmount,
-    updateLiveTotal,
-} from "./modules/ClientsDOM.mjs";
-import * as impFuncs from "./modules/GenFunctions.mjs";
-import * as clientFunc from "./modules/ClientsFunctions.mjs";
+import * as globalVars from "./modules/globalVars.mjs";
+import * as clientVars from "./modules/clientVars.mjs";
+import * as globalFuncs from "./modules/globalFuncs.mjs";
+import * as clientFuncs from "./modules/clientFuncs.mjs";
 
 /* Formulario e inputs para agregar clientes */
 const frmClientData = document.getElementById("frmClientData");
@@ -28,15 +14,14 @@ const frmClientData = document.getElementById("frmClientData");
 let fbLives = { lives: [] };
 const getPrevLives = () => {
     //Se obtienen los lives previos en caso de que existan
-    firebase.storage
-        .collection("vendedoras")
-        .doc(userIdLS)
+    firebase.STORAGE.collection("vendedoras")
+        .doc(clientVars.userIdLS)
         .get()
         .then((seller) => {
             if (seller.exists) fbLives = seller.data();
         })
         .catch((err) => {
-            showModal(
+            clientFuncs.showModal(
                 "Error al leer base de datos",
                 `Si sigues utilizando la pagina la informacion no se guardara en la base de datos.\n\nReporta este error: ${err}`
             );
@@ -48,7 +33,7 @@ const liveToEdit = JSON.parse(localStorage.getItem("LiveToEdit"));
 const btnExit = document.getElementById("btnExit");
 /* Al salir de la edicion del live */
 btnExit.addEventListener("click", () => {
-    showModal("Saliendo..", "Volviendo a la pantalla de inicio sin guardar.");
+    clientFuncs.showModal("Saliendo..", "Volviendo a la pantalla de inicio sin guardar.");
     open("index.html", "_self");
     localStorage.setItem("Edit", "off");
 });
@@ -61,49 +46,54 @@ const checkForPrevClients = () => {
 
     //Si el usuario entro en modo edicion
     if (localStorage.getItem("Edit") == "on") {
-        showModal(
+        clientFuncs.showModal(
             "Modo edicion",
             "Usted se encuentra en el modo de edicion, todos los cambios que realice se guardaran en el live que esta editando.\n\nImportante: ninguno de los cambios realizados en este live se guardaran hasta que no de click en el boton de guardar"
         );
         btnExit.classList.remove("d-none");
         dateLive.innerText = liveToEdit.date;
-        setClientsArr(liveToEdit.clients);
-        clientFunc.loadClientsFromArr();
-        updateAndSave();
+        clientVars.setClientsArr(liveToEdit.clients);
+        clientFuncs.loadClientsFromArr();
+        clientFuncs.updateAndSave();
         return;
     }
 
     //Si habian elementos en el almacenamiento local
-    if (clientsArr.length > 0) {
-        showModal("Almacenamiento local", "Habian clientes en el almacenamiento local de una sesion previa.");
+    if (clientVars.clientsArr.length > 0) {
+        clientFuncs.showModal(
+            "Almacenamiento local",
+            "Habian clientes en el almacenamiento local de una sesion previa."
+        );
         dateLive.innerText = localStorage.getItem("Date");
-        clientFunc.loadClientsFromArr();
-        updateAndSave();
+        clientFuncs.loadClientsFromArr();
+        clientFuncs.updateAndSave();
         return;
     }
 
     //Si no habian elementos en el almacenamiento local
-    const time = `${impFuncs.formatTime(DATE.getHours())}:${impFuncs.formatTime(DATE.getMinutes())}`;
+    const time = `${globalFuncs.formatTime(globalVars.DATE.getHours())}:${globalFuncs.formatTime(
+        globalVars.DATE.getMinutes()
+    )}`;
     localStorage.setItem("TimeStart", time);
     /* Se muestra y almacena la fecha del live */
-    const currentDate = impFuncs.getCompleteDate();
+    const currentDate = globalFuncs.getCompleteDate();
     localStorage.setItem("Date", currentDate);
     dateLive.innerText = currentDate;
     /* --------------------------------------- */
     const warn =
         "Mientras no se agreguen clientes a la lista, cada vez que se recargue la pagina la hora de inicio y la fecha seran actualizadas.";
-    showModal(`Informacion del live`, `Hora de inicio: ${time}\nFecha: ${currentDate}\n\n${warn}`);
+    clientFuncs.showModal(`Informacion del live`, `Hora de inicio: ${time}\nFecha: ${currentDate}\n\n${warn}`);
 };
 
 checkForPrevClients();
 
 /* Cancelar la edicion del cliente */
-document.getElementById("btnEditCancel").addEventListener("click", () => modalEdit.classList.add("d-none"));
+document.getElementById("btnEditCancel").addEventListener("click", () => clientVars.modalEdit.classList.add("d-none"));
 
 /* Eventos para los inputs del formulario para editar un cliente */
-frmEdit.nameE.addEventListener("input", ({ target }) => impFuncs.allowJustLetters(target));
-frmEdit.articlesE.addEventListener("input", ({ target }) => impFuncs.allowJustNumbers(target));
-frmEdit.totalE.addEventListener("input", ({ target }) => impFuncs.allowJustNumbers(target));
+clientVars.frmEdit.nameE.addEventListener("input", ({ target }) => globalFuncs.allowJustLetters(target));
+clientVars.frmEdit.articlesE.addEventListener("input", ({ target }) => globalFuncs.allowJustNumbers(target));
+clientVars.frmEdit.totalE.addEventListener("input", ({ target }) => globalFuncs.allowJustNumbers(target));
 /* ------------------------------------------------------------- */
 
 const formatNameCorrectly = (string) => {
@@ -115,14 +105,14 @@ const formatNameCorrectly = (string) => {
 };
 
 /* Al editar un cliente */
-frmEdit.addEventListener("submit", (e) => {
+clientVars.frmEdit.addEventListener("submit", (e) => {
     e.preventDefault();
-    let editNameVal = frmEdit.nameE.value.trim();
-    const editArticlesVal = Number(frmEdit.articlesE.value.trim());
-    const editTotalVal = Number(frmEdit.totalE.value.trim());
+    let editNameVal = clientVars.frmEdit.nameE.value.trim();
+    const editArticlesVal = Number(clientVars.frmEdit.articlesE.value.trim());
+    const editTotalVal = Number(clientVars.frmEdit.totalE.value.trim());
 
     if (editNameVal.split(" ").length > 2) {
-        showModal(
+        clientFuncs.showModal(
             "Error al modificar",
             "Asegurate de solo agregar al cliente con un nombre y un apellido o dos nombres, pero no más."
         );
@@ -130,7 +120,7 @@ frmEdit.addEventListener("submit", (e) => {
     }
 
     if (editNameVal.split(" ").length < 2) {
-        showModal(
+        clientFuncs.showModal(
             "Error al modificar",
             "Asegurate de agregar dos nombres o un nombre y un apellido al cliente, solo escribir un nombre no es valido."
         );
@@ -140,7 +130,7 @@ frmEdit.addEventListener("submit", (e) => {
     editNameVal = formatNameCorrectly(editNameVal);
 
     if (editNameVal === "" || editArticlesVal <= 0 || editTotalVal <= 0) {
-        showModal(
+        clientFuncs.showModal(
             "Error al modificar",
             "Asegurate de llenar todos los campos antes de continuar o de introducir una cantidad valida."
         );
@@ -148,14 +138,16 @@ frmEdit.addEventListener("submit", (e) => {
     }
 
     //Se busca un cliente con el mismo nombre y diferente id
-    let clientRepeated = clientsArr.find((element) => element.name == editNameVal && element.clientId !== modalEdit.id);
+    let clientRepeated = clientVars.clientsArr.find(
+        (element) => element.name == editNameVal && element.clientId !== clientVars.modalEdit.id
+    );
 
     //Si el cliente ya existe
     if (clientRepeated) {
         const confirmMsg = `Ya existe otro cliente con este nombre en la lista\n\n¿Deseas unificarlos?`;
         if (!confirm(confirmMsg)) return;
         /* Si quiere unificar a los clientes */
-        const currentClient = clientFunc.getClientInfoById(modalEdit.id);
+        const currentClient = clientFuncs.getClientInfoById(clientVars.modalEdit.id);
 
         //Crear un nuevo objeto con la informacion unificada
         const mergedClient = {
@@ -166,28 +158,28 @@ frmEdit.addEventListener("submit", (e) => {
         };
 
         //Se elimina el cliente de la lista de recomendaciones para agregar
-        clientFunc.deleteOption(currentClient.clientId);
+        clientFuncs.deleteOption(currentClient.clientId);
 
         //Se eliminan ambos clientes del arreglo y la interfaz
-        clientFunc.deleteThis(modalEdit.id);
-        clientFunc.deleteThis(clientRepeated.clientId);
+        clientFuncs.deleteThis(clientVars.modalEdit.id);
+        clientFuncs.deleteThis(clientRepeated.clientId);
 
         //Se agrega el nuevo cliente al arreglo y la interfaz
-        clientsArr.push(mergedClient);
+        clientVars.clientsArr.push(mergedClient);
         sortLive();
-        modalEdit.classList.add("d-none");
+        clientVars.modalEdit.classList.add("d-none");
         /* --------------------------------- */
         return;
     }
 
     //Si no existe otro cliente igual
-    for (let client of clientsArr) {
-        if (client.clientId !== modalEdit.id) continue;
+    for (let client of clientVars.clientsArr) {
+        if (client.clientId !== clientVars.modalEdit.id) continue;
 
         //Verificar si se cambio el nombre
         if (client.name !== editNameVal) {
-            clientFunc.deleteOption(client.clientId); //Se elimina la opcion del nombre del clientlist
-            clientsDataList.appendChild(clientFunc.createOption(editNameVal, client.clientId)); //Se agrega el nuevo nombre para autocompletar en la lista de clientes
+            clientFuncs.deleteOption(client.clientId); //Se elimina la opcion del nombre del clientlist
+            clientVars.clientsDataList.appendChild(clientFuncs.createOption(editNameVal, client.clientId)); //Se agrega el nuevo nombre para autocompletar en la lista de clientes
         }
 
         client.name = editNameVal;
@@ -197,12 +189,12 @@ frmEdit.addEventListener("submit", (e) => {
     }
 
     sortLive();
-    modalEdit.classList.add("d-none");
+    clientVars.modalEdit.classList.add("d-none");
 });
 /* -------------------- */
 
 /* Eventos para los inputs del formulario para agregar un cliente */
-frmClientData.clientName.addEventListener("input", (e) => impFuncs.allowJustLetters(e.target));
+frmClientData.clientName.addEventListener("input", (e) => globalFuncs.allowJustLetters(e.target));
 frmClientData.price.addEventListener("input", ({ target, data }) => {
     //El input devuelve en value un <empty string> si se agrega un valor no numerico
     if (target.value === "" && data !== "-") target.value = ""; //Si se agrego un valor no numerico se vacia el input
@@ -223,7 +215,7 @@ frmClientData.addEventListener("submit", (e) => {
     const amountVal = Number(frmClientData.amount.value.trim());
 
     if (clientNameVal.split(" ").length > 2) {
-        showModal(
+        clientFuncs.showModal(
             "Error al agregar",
             "Asegurate de solo agregar al cliente con un nombre y un apellido o dos nombres, pero no más."
         );
@@ -231,7 +223,7 @@ frmClientData.addEventListener("submit", (e) => {
     }
 
     if (clientNameVal.split(" ").length < 2) {
-        showModal(
+        clientFuncs.showModal(
             "Error al agregar",
             "Asegurate de agregar dos nombres o un nombre y un apellido al cliente, solo escribir un nombre no es valido."
         );
@@ -241,7 +233,7 @@ frmClientData.addEventListener("submit", (e) => {
     clientNameVal = formatNameCorrectly(clientNameVal);
 
     if (clientNameVal === "" || priceVal == 0) {
-        showModal(
+        clientFuncs.showModal(
             "Error al agregar",
             "Asegurate de llenar todos los campos antes de continuar o introducir un precio correcto."
         );
@@ -251,11 +243,11 @@ frmClientData.addEventListener("submit", (e) => {
     frmClientData.amount.removeAttribute("disabled");
 
     //Se obtiene el cliente de la lista
-    let clientFromList = clientFunc.getClientInfoByName(clientNameVal);
+    let clientFromList = clientFuncs.getClientInfoByName(clientNameVal);
     //Si el cliente está en la lista
     if (clientFromList) {
         //Modificar cliente en el arreglo
-        for (let client of clientsArr) {
+        for (let client of clientVars.clientsArr) {
             if (client.name !== clientNameVal) continue;
 
             //Si ingresa un precio negativo
@@ -286,7 +278,7 @@ frmClientData.addEventListener("submit", (e) => {
 
         //Modificar cliente en la interfaz
         const totalToEdit = document.getElementById(clientFromList.clientId).children[1].firstElementChild;
-        totalToEdit.innerText = FORMATTER.format(clientFromList.total);
+        totalToEdit.innerText = globalVars.FORMATTER.format(clientFromList.total);
         const articlesToEdit = document.getElementById(clientFromList.clientId).firstElementChild.lastElementChild;
         articlesToEdit.innerText = clientFromList.articles;
 
@@ -297,14 +289,14 @@ frmClientData.addEventListener("submit", (e) => {
         if (clientFromList.total > 0) return;
         //Si el cliente tiene un total menor o igual a 0
         document.getElementById(clientFromList.clientId).remove(); //Se elimina de la interfaz
-        clientFunc.deleteOption(clientFromList.clientId); //Se elimina la opcion del nombre del clientlist
-        clientFunc.removeClientFromArr(clientFunc.getClientIndexById(clientFromList.clientId)); //Se elimina del arreglo
+        clientFuncs.deleteOption(clientFromList.clientId); //Se elimina la opcion del nombre del clientlist
+        clientFuncs.removeClientFromArr(clientFuncs.getClientIndexById(clientFromList.clientId)); //Se elimina del arreglo
         sortLive();
         return;
     }
 
     if (priceVal <= 0) {
-        showModal("Error al agregar", "No puedes agregar un cliente a la lista con esta cantidad");
+        clientFuncs.showModal("Error al agregar", "No puedes agregar un cliente a la lista con esta cantidad");
         return;
     }
     //Si el cliente no esta en la lista
@@ -313,7 +305,7 @@ frmClientData.addEventListener("submit", (e) => {
         total: priceVal * amountVal,
         articles: amountVal,
         registry: [],
-        clientId: impFuncs.makeId(),
+        clientId: globalFuncs.generateId(),
     };
     //Se agrega la cantidad al registro de operaciones con el cliente
     clientFromList.registry.push(`+${priceVal}`);
@@ -323,8 +315,8 @@ frmClientData.addEventListener("submit", (e) => {
         for (let i = 1; i < amountVal; i++) clientFromList.registry.push(`+${priceVal}`);
     }
 
-    clientsArr.push(clientFromList);
-    clientFunc.createNewClient(clientFromList.clientId, clientNameVal, priceVal, clientFromList.articles);
+    clientVars.clientsArr.push(clientFromList);
+    clientFuncs.createNewClient(clientFromList.clientId, clientNameVal, priceVal, clientFromList.articles);
 
     frmClientData.reset();
     frmClientData.clientName.focus();
@@ -335,12 +327,12 @@ frmClientData.addEventListener("submit", (e) => {
 /* Funciones para los botones de ordenar, eliminar y guardar */
 const clearLive = () => {
     /* Se muestra y almacena la fecha actual */
-    const currentDate = impFuncs.getCompleteDate();
+    const currentDate = globalFuncs.getCompleteDate();
     localStorage.setItem("Date", currentDate);
     dateLive.innerText = currentDate;
     /* ------------------------------------- */
-    clientFunc.emptyClients();
-    updateAndSave();
+    clientFuncs.emptyClients();
+    clientFuncs.updateAndSave();
 };
 const getBestBuyer = (arr) => {
     let bestBuyer = arr[0];
@@ -349,51 +341,51 @@ const getBestBuyer = (arr) => {
 };
 const getTotalArticles = () => {
     let totalArticles = 0;
-    for (let client of clientsArr) totalArticles += client.articles;
+    for (let client of clientVars.clientsArr) totalArticles += client.articles;
     return totalArticles;
 };
 export const removeLiveFromArr = (index) => fbLives.lives.splice(index, 1);
 
 const sortLive = () => {
     //Ordenar el arreglo y actualizarlo en el LS
-    clientFunc.sortClientsArr();
-    saveClientsLS();
-    updateLiveTotal();
-    updateClientsAmount();
+    clientFuncs.sortClientsArr();
+    clientFuncs.saveClientsLS();
+    clientFuncs.updateLiveTotal();
+    clientFuncs.updateClientsAmount();
     //Limpiar el contenedor de los clientes
-    clientsHtmlCnt.innerHTML = "";
+    clientVars.clientsHtmlCnt.innerHTML = "";
     const clientsHtmlFrgmnt = document.createDocumentFragment();
     //Mostrar los clientes ordenados en la interfaz
-    for (let client of clientsArr)
+    for (let client of clientVars.clientsArr)
         clientsHtmlFrgmnt.appendChild(
-            clientFunc.createHtml(client.clientId, client.name, client.total, client.articles)
+            clientFuncs.createHtml(client.clientId, client.name, client.total, client.articles)
         );
-    clientsHtmlCnt.appendChild(clientsHtmlFrgmnt);
+    clientVars.clientsHtmlCnt.appendChild(clientsHtmlFrgmnt);
 };
 
 const saveLive = () => {
     const editOn = localStorage.getItem("Edit") == "on" ? true : false;
 
-    if (clientsArr.length == 0 && !editOn) {
-        showModal("Error al guardar", "No hay ningun cliente que guardar en la tabla de clientes.");
+    if (clientVars.clientsArr.length == 0 && !editOn) {
+        clientFuncs.showModal("Error al guardar", "No hay ningun cliente que guardar en la tabla de clientes.");
         return;
     }
 
     /* Crear objeto del live e introducirlo en los lives existentes */
     const actualDate = new Date();
-    const endTime = `${impFuncs.formatTime(actualDate.getHours())}:${impFuncs.formatTime(
+    const endTime = `${globalFuncs.formatTime(actualDate.getHours())}:${globalFuncs.formatTime(
         actualDate.getMinutes()
-    )}:${impFuncs.formatTime(actualDate.getSeconds())}`;
+    )}:${globalFuncs.formatTime(actualDate.getSeconds())}`;
     const liveData = {
-        liveId: editOn ? liveToEdit.liveId : impFuncs.makeId(),
+        liveId: editOn ? liveToEdit.liveId : globalFuncs.generateId(),
         date: editOn ? liveToEdit.date : localStorage.getItem("Date"),
         startTime: editOn ? liveToEdit.startTime : localStorage.getItem("TimeStart"),
         time: editOn ? liveToEdit.time : endTime,
         clientsAmount: Number(clientsAmount.innerText),
-        clients: clientsArr,
+        clients: clientVars.clientsArr,
         total: Number(totalLive.innerText.replace(/,/g, "")),
         totalArticles: getTotalArticles(),
-        bestBuyer: getBestBuyer(clientsArr),
+        bestBuyer: getBestBuyer(clientVars.clientsArr),
     };
     let indexOfPrevLive;
     if (editOn) {
@@ -408,26 +400,29 @@ const saveLive = () => {
         localStorage.setItem("Edit", "off");
     }
 
-    showModal("Cargando..", "Espere mientras se almacena la informacion del live en la base de datos.");
+    clientFuncs.showModal("Cargando..", "Espere mientras se almacena la informacion del live en la base de datos.");
 
-    if (clientsArr.length !== 0) {
+    if (clientVars.clientsArr.length !== 0) {
         if (editOn) {
             fbLives.lives.splice(indexOfPrevLive, 0, liveData); //Guarda el live de modo que permanezca en la misma posicion en la que estaba antes de ser modificado
         } else fbLives.lives.push(liveData);
-    } else showModal("Live eliminado", "Al sobreescribir el live sin ningun cliente se elimina de la base de datos");
+    } else
+        clientFuncs.showModal(
+            "Live eliminado",
+            "Al sobreescribir el live sin ningun cliente se elimina de la base de datos"
+        );
     /* ------------------------------------------------------------- */
 
     /* Agregar el nuevo objeto a la base de datos */
-    firebase.storage
-        .collection("vendedoras")
-        .doc(userIdLS)
+    firebase.STORAGE.collection("vendedoras")
+        .doc(clientVars.userIdLS)
         .set(fbLives)
         .then(() => {
             clearLive();
             open("index.html", "_self");
         })
         .catch((err) => {
-            showModal(
+            clientFuncs.showModal(
                 "Error al guardar",
                 `Ocurrio un error al guardar la informacion en la base de datos, informe sobre este error: ${err}`
             );
@@ -442,8 +437,8 @@ document.getElementById("btnDelete").addEventListener("click", () => clearLive()
 
 /* Al imprimir la tabla */
 document.getElementById("btnPrint").addEventListener("click", () => {
-    if (clientsArr.length == 0) {
-        showModal("Error al imprimir", "No hay ningun cliente que imprimir en la tabla de clientes.");
+    if (clientVars.clientsArr.length == 0) {
+        clientFuncs.showModal("Error al imprimir", "No hay ningun cliente que imprimir en la tabla de clientes.");
         return;
     }
     window.print();

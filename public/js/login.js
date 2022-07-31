@@ -3,7 +3,7 @@
 import * as firebase from "./modules/firebase.mjs";
 import * as globalVars from "./modules/globalVars.mjs";
 
-const auth = firebase.app.auth();
+const auth = firebase.APP.auth();
 
 const frmLogin = document.getElementById("frmLogin");
 const mail = frmLogin.mail;
@@ -95,8 +95,7 @@ const createLiveHtml = (liveData) => {
 const weekTotal = document.getElementById("weekTotal");
 
 const loadContentFromFb = (userId) => {
-    firebase.storage
-        .collection("vendedoras")
+    firebase.STORAGE.collection("vendedoras")
         .doc(userId)
         .get()
         .then((seller) => {
@@ -189,8 +188,7 @@ frmLogin.addEventListener("submit", (e) => {
 /* Eliminar todos los lives para empezar una nueva semana */
 document.getElementById("livesDelete").addEventListener("click", () => {
     if (confirm("Seguro que deseas eliminar todo y empezar una nueva semana")) {
-        firebase.storage
-            .collection("vendedoras")
+        firebase.STORAGE.collection("vendedoras")
             .doc(userIdLS)
             .delete()
             .then(() => {
