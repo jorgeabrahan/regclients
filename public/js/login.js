@@ -14,6 +14,7 @@ const login = document.querySelector(".login");
 const userIdLS = localStorage.getItem("userId");
 
 const livesCnt = document.getElementById("livesCnt");
+const livesTable = document.getElementById("livesTable");
 const livesOpts = document.getElementById("livesOpts");
 
 const noLivesMsg = document.getElementById("noLivesMsg");
@@ -107,7 +108,9 @@ const loadContentFromFb = (userId) => {
             }
             /* ----------------------------------------------- */
 
-            livesOpts.classList.remove("d-none"); //Si ya tiene lives previos se muestran las opciones
+            //Si ya tiene lives previos
+            livesTable.classList.remove("d-none");
+            livesOpts.classList.remove("d-none");
 
             /* Se muestran los lives en la interfaz */
             let totalLives = 0;
@@ -194,7 +197,7 @@ document.getElementById("livesDelete").addEventListener("click", () => {
             .then(() => {
                 livesCnt.innerHTML = "";
                 weekTotal.innerText = "0.00";
-                livesOpts.classList.add("d-none");
+                livesTable.classList.add("d-none");
                 noLivesMsg.classList.remove("d-none");
             });
     }
@@ -209,7 +212,13 @@ printWeekTable.addEventListener("click", () => {
     if (confirm("¿Desea mostrar el total de la semana en la tabla?"))
         weekClientsTable.appendChild(weekTotal.parentElement);
     else document.getElementById("totalCnt").appendChild(weekTotal.parentElement);
-    window.print();
+    try {
+        if (!document.execCommand("print", false, null)) {
+            window.print();
+        }
+    } catch {
+        window.print();
+    }
 });
 /* --------------------------------------------------- */
 

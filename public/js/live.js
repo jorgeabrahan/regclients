@@ -441,7 +441,13 @@ document.getElementById("btnPrint").addEventListener("click", () => {
         clientFuncs.showModal("Error al imprimir", "No hay ningun cliente que imprimir en la tabla de clientes.");
         return;
     }
-    window.print();
+    try {
+        if (!document.execCommand("print", false, null)) {
+            window.print();
+        }
+    } catch {
+        window.print();
+    }
 });
 /* -------------------- */
 
@@ -466,8 +472,8 @@ shortcutsToggle.addEventListener("change", () => {
 
 document.addEventListener("keydown", (e) => {
     if (getShortcutsEnabled()) {
-        if (e.altKey && e.code == "KeyQ") frmClientData.clientName.focus();
-        if (e.altKey && e.code == "KeyW") frmClientData.price.focus();
+        if (e.altKey && e.code == "KeyQ") frmClientData.clientName.select();
+        if (e.altKey && e.code == "KeyW") frmClientData.price.select();
         if (e.altKey && e.code == "KeyC") clearLive();
         if (e.altKey && e.code == "KeyG") saveLive();
     }

@@ -78,9 +78,6 @@ select {
 .btn span {
     pointer-events: none;
 }
-.d-none {
-    display: none;
-}
 
 /* Remove all animations, transitions and smooth scroll for people that prefer not to see them */
 @media (prefers-reduced-motion: reduce) {
@@ -226,4 +223,9 @@ select {
     .table__content div {
         padding: 0.2em 0;
     }
+}
+
+
+.d-none {
+    display: none;
 }
