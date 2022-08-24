@@ -19,8 +19,6 @@ const livesOpts = document.getElementById("livesOpts");
 
 const noLivesMsg = document.getElementById("noLivesMsg");
 
-let fbLives = { lives: [] };
-
 const createClientsHtml = (clients) => {
     const allClients = clients.map(
         (client) => `
@@ -43,7 +41,7 @@ document.getElementById("btnLogout").addEventListener("click", () => {
 });
 const editLive = (id) => {
     localStorage.setItem("Edit", "on");
-    localStorage.setItem("LiveToEdit", JSON.stringify(fbLives.lives.find((element) => element.liveId == id)));
+    localStorage.setItem("LiveToEdit", JSON.stringify(globalVars.livesObj.lives.find((element) => element.liveId == id)));
     open("live.html", "_self");
 };
 
@@ -96,13 +94,13 @@ const createLiveHtml = (liveData) => {
 const weekTotal = document.getElementById("weekTotal");
 
 const loadContentFromFb = (userId) => {
-    firebase.STORAGE.collection("vendedoras")
+    firebase.FIRESTORE.collection("vendedoras")
         .doc(userId)
         .get()
         .then((seller) => {
-            if (seller.exists) fbLives = seller.data();
+            if (seller.exists) globalVars.setLivesObj(seller.data());
             /* Si ya inicio sesion pero no tiene lives previos */
-            if (fbLives.lives.length == 0) {
+            if (globalVars.livesObj.lives.length == 0) {
                 noLivesMsg.classList.remove("d-none");
                 return;
             }
@@ -115,7 +113,7 @@ const loadContentFromFb = (userId) => {
             /* Se muestran los lives en la interfaz */
             let totalLives = 0;
             const livesFrgmn = document.createDocumentFragment();
-            for (let live of fbLives.lives) {
+            for (let live of globalVars.livesObj.lives) {
                 livesFrgmn.appendChild(createLiveHtml(live));
                 totalLives += live.total;
             }
@@ -126,9 +124,9 @@ const loadContentFromFb = (userId) => {
             mergeClientsLive(); //Se crea la tabla unificando todos los clientes
 
             const weekDay = globalVars.WEEK_DAYS[globalVars.DATE.getDay()];
-            if (weekDay === "Lunes" && fbLives.lives.length > 0) {
+            if (weekDay === "Lunes" && globalVars.livesObj.lives.length > 0) {
                 let existsLiveFromPastWeek = false;
-                for (live of fbLives.lives) {
+                for (let live of globalVars.livesObj.lives) {
                     const liveDay = live.date.split(" ")[0];
                     const dayIndex = globalVars.WEEK_DAYS.findIndex((day) => liveDay === day);
                     //If theres a live from past week
@@ -146,7 +144,7 @@ const loadContentFromFb = (userId) => {
             }
         })
         .catch((err) => {
-            const errMsg = `Error al leer la base de datos, intente en otro momento con una mejor conexion a internet.\nError: ${err}`;
+            const errMsg = `Error al leer la base de datos, intente en otro momento con una mejor conexion a internet.<br />Error: ${err}`;
             alert(errMsg);
             throw new Error(errMsg);
         });
@@ -157,8 +155,10 @@ const onLogin = (userId) => {
     loadContentFromFb(userId);
 };
 
-/* Si ya inicio sesion */
-if (userIdLS != null) onLogin(userIdLS);
+window.onload = () => {
+    /* Si ya inicio sesion */
+    if (userIdLS != null) onLogin(userIdLS);
+};
 
 /* Al iniciar sesion */
 frmLogin.addEventListener("submit", (e) => {
@@ -191,13 +191,14 @@ frmLogin.addEventListener("submit", (e) => {
 /* Eliminar todos los lives para empezar una nueva semana */
 document.getElementById("livesDelete").addEventListener("click", () => {
     if (confirm("Seguro que deseas eliminar todo y empezar una nueva semana")) {
-        firebase.STORAGE.collection("vendedoras")
+        firebase.FIRESTORE.collection("vendedoras")
             .doc(userIdLS)
             .delete()
             .then(() => {
                 livesCnt.innerHTML = "";
                 weekTotal.innerText = "0.00";
                 livesTable.classList.add("d-none");
+                livesOpts.classList.add("d-none");
                 noLivesMsg.classList.remove("d-none");
             });
     }
@@ -209,8 +210,7 @@ const printWeekTable = document.getElementById("printWeekTable");
 
 /* Al imprimir la tabla con todos los lives unificados */
 printWeekTable.addEventListener("click", () => {
-    if (confirm("¿Desea mostrar el total de la semana en la tabla?"))
-        weekClientsTable.appendChild(weekTotal.parentElement);
+    if (confirm("¿Desea mostrar el total de la semana en la tabla?")) weekClientsTable.appendChild(weekTotal.parentElement);
     else document.getElementById("totalCnt").appendChild(weekTotal.parentElement);
     try {
         if (!document.execCommand("print", false, null)) {
@@ -260,12 +260,11 @@ const mergeClients = (clients) => {
     }
 };
 const mergeClientsLive = () => {
-    for (let live of fbLives.lives) mergeClients(live.clients); //Por cada live se buscan clientes que compraron en varios y se unifica su informacion
+    for (let live of globalVars.livesObj.lives) mergeClients(live.clients); //Por cada live se buscan clientes que compraron en varios y se unifica su informacion
     sortWeekClients(); //Se ordena el arreglo resultante
     /* Se muestra el arreglo unificado como tabla en la interfaz */
     const weekClientsFrgmnt = document.createDocumentFragment();
-    for (let client of weekClients)
-        weekClientsFrgmnt.appendChild(createWeekClientsHtml(client.name, client.articles, client.total));
+    for (let client of weekClients) weekClientsFrgmnt.appendChild(createWeekClientsHtml(client.name, client.articles, client.total));
     weekClientsTable.appendChild(weekClientsFrgmnt);
     /* Se muestra la cantidad de clientes */
     document.getElementById("weekClientsAmount").innerText = weekClients.length;

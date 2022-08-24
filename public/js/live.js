@@ -6,24 +6,23 @@ import * as clientVars from "./modules/clientVars.mjs";
 import * as globalFuncs from "./modules/globalFuncs.mjs";
 import * as clientFuncs from "./modules/clientFuncs.mjs";
 
-/* Formulario e inputs para agregar clientes */
-const frmClientData = document.getElementById("frmClientData");
-/* ----------------------------------------- */
+const frmClientData = document.getElementById("frmClientData"); //Formulario agregar clientes
 
 /* Obtener los lives anteriores en caso de que existan */
-let fbLives = { lives: [] };
 const getPrevLives = () => {
     //Se obtienen los lives previos en caso de que existan
-    firebase.STORAGE.collection("vendedoras")
+    firebase.FIRESTORE.collection("vendedoras")
         .doc(clientVars.userIdLS)
         .get()
         .then((seller) => {
-            if (seller.exists) fbLives = seller.data();
+            if (seller.exists) globalVars.setLivesObj(seller.data());
         })
         .catch((err) => {
             clientFuncs.showModal(
                 "Error al leer base de datos",
-                `Si sigues utilizando la pagina la informacion no se guardara en la base de datos.\n\nReporta este error: ${err}`
+                `Si sigues utilizando la pagina la informacion no se guardara en la base de datos.
+                <br /><br />
+                Reporta este error: ${err}`
             );
         });
 };
@@ -34,8 +33,10 @@ const btnExit = document.getElementById("btnExit");
 /* Al salir de la edicion del live */
 btnExit.addEventListener("click", () => {
     clientFuncs.showModal("Saliendo..", "Volviendo a la pantalla de inicio sin guardar.");
-    open("index.html", "_self");
+    clientFuncs.emptyClients();
+    clientFuncs.saveClientsLS();
     localStorage.setItem("Edit", "off");
+    open("index.html", "_self");
 });
 /* ------------------------------ */
 
@@ -48,7 +49,7 @@ const checkForPrevClients = () => {
     if (localStorage.getItem("Edit") == "on") {
         clientFuncs.showModal(
             "Modo edicion",
-            "Usted se encuentra en el modo de edicion, todos los cambios que realice se guardaran en el live que esta editando.\n\nImportante: ninguno de los cambios realizados en este live se guardaran hasta que no de click en el boton de guardar"
+            "Usted se encuentra en el modo de edicion, todos los cambios que realice se guardaran en el live que esta editando.<br /><br /><strong>Importante:</strong> <i>ninguno de los cambios realizados en este live se guardaran hasta que no de click en el boton de guardar.</i>"
         );
         btnExit.classList.remove("d-none");
         dateLive.innerText = liveToEdit.date;
@@ -60,10 +61,7 @@ const checkForPrevClients = () => {
 
     //Si habian elementos en el almacenamiento local
     if (clientVars.clientsArr.length > 0) {
-        clientFuncs.showModal(
-            "Almacenamiento local",
-            "Habian clientes en el almacenamiento local de una sesion previa."
-        );
+        clientFuncs.showModal("Almacenamiento local", "Habian clientes en el almacenamiento local de una sesion previa.");
         dateLive.innerText = localStorage.getItem("Date");
         clientFuncs.loadClientsFromArr();
         clientFuncs.updateAndSave();
@@ -71,9 +69,7 @@ const checkForPrevClients = () => {
     }
 
     //Si no habian elementos en el almacenamiento local
-    const time = `${globalFuncs.formatTime(globalVars.DATE.getHours())}:${globalFuncs.formatTime(
-        globalVars.DATE.getMinutes()
-    )}`;
+    const time = `${globalFuncs.formatTime(globalVars.DATE.getHours())}:${globalFuncs.formatTime(globalVars.DATE.getMinutes())}`;
     localStorage.setItem("TimeStart", time);
     /* Se muestra y almacena la fecha del live */
     const currentDate = globalFuncs.getCompleteDate();
@@ -82,7 +78,7 @@ const checkForPrevClients = () => {
     /* --------------------------------------- */
     const warn =
         "Mientras no se agreguen clientes a la lista, cada vez que se recargue la pagina la hora de inicio y la fecha seran actualizadas.";
-    clientFuncs.showModal(`Informacion del live`, `Hora de inicio: ${time}\nFecha: ${currentDate}\n\n${warn}`);
+    clientFuncs.showModal(`Informacion del live`, `Hora de inicio: ${time}<br />Fecha: ${currentDate}<br /><br />${warn}`);
 };
 
 checkForPrevClients();
@@ -211,7 +207,7 @@ frmClientData.addEventListener("submit", (e) => {
     e.preventDefault();
 
     let clientNameVal = frmClientData.clientName.value.trim();
-    const priceVal = Number(frmClientData.price.value.trim());
+    const priceVal = frmClientData.price.valueAsNumber;
     const amountVal = Number(frmClientData.amount.value.trim());
 
     if (clientNameVal.split(" ").length > 2) {
@@ -306,6 +302,7 @@ frmClientData.addEventListener("submit", (e) => {
         articles: amountVal,
         registry: [],
         clientId: globalFuncs.generateId(),
+        checked: false,
     };
     //Se agrega la cantidad al registro de operaciones con el cliente
     clientFromList.registry.push(`+${priceVal}`);
@@ -316,7 +313,7 @@ frmClientData.addEventListener("submit", (e) => {
     }
 
     clientVars.clientsArr.push(clientFromList);
-    clientFuncs.createNewClient(clientFromList.clientId, clientNameVal, priceVal, clientFromList.articles);
+    clientFuncs.createNewClient(clientFromList.clientId, clientNameVal, priceVal, clientFromList.articles, clientFromList.checked);
 
     frmClientData.reset();
     frmClientData.clientName.focus();
@@ -344,7 +341,7 @@ const getTotalArticles = () => {
     for (let client of clientVars.clientsArr) totalArticles += client.articles;
     return totalArticles;
 };
-export const removeLiveFromArr = (index) => fbLives.lives.splice(index, 1);
+export const removeLiveFromArr = (index) => globalVars.livesObj.lives.splice(index, 1);
 
 const sortLive = () => {
     //Ordenar el arreglo y actualizarlo en el LS
@@ -357,9 +354,7 @@ const sortLive = () => {
     const clientsHtmlFrgmnt = document.createDocumentFragment();
     //Mostrar los clientes ordenados en la interfaz
     for (let client of clientVars.clientsArr)
-        clientsHtmlFrgmnt.appendChild(
-            clientFuncs.createHtml(client.clientId, client.name, client.total, client.articles)
-        );
+        clientsHtmlFrgmnt.appendChild(clientFuncs.createHtml(client.clientId, client.name, client.total, client.articles, client.checked));
     clientVars.clientsHtmlCnt.appendChild(clientsHtmlFrgmnt);
 };
 
@@ -373,9 +368,11 @@ const saveLive = () => {
 
     /* Crear objeto del live e introducirlo en los lives existentes */
     const actualDate = new Date();
-    const endTime = `${globalFuncs.formatTime(actualDate.getHours())}:${globalFuncs.formatTime(
-        actualDate.getMinutes()
-    )}:${globalFuncs.formatTime(actualDate.getSeconds())}`;
+    const endTime = `
+        ${globalFuncs.formatTime(actualDate.getHours())}:${globalFuncs.formatTime(actualDate.getMinutes())}:${globalFuncs.formatTime(
+        actualDate.getSeconds()
+    )}
+    `;
     const liveData = {
         liveId: editOn ? liveToEdit.liveId : globalFuncs.generateId(),
         date: editOn ? liveToEdit.date : localStorage.getItem("Date"),
@@ -389,14 +386,14 @@ const saveLive = () => {
     };
     let indexOfPrevLive;
     if (editOn) {
-        for (let index in fbLives.lives) {
-            if (fbLives.lives[index].liveId !== liveToEdit.liveId) continue;
+        if (!confirm("Esta a punto de sobreescribir la información previa del live, ¿Desea continuar?")) return;
+
+        for (let index in globalVars.livesObj.lives) {
+            if (globalVars.livesObj.lives[index].liveId !== liveToEdit.liveId) continue;
             removeLiveFromArr(index);
             indexOfPrevLive = index;
             break;
         }
-
-        if (!confirm("Esta a punto de sobreescribir la información previa del live, ¿Desea continuar?")) return;
         localStorage.setItem("Edit", "off");
     }
 
@@ -404,19 +401,15 @@ const saveLive = () => {
 
     if (clientVars.clientsArr.length !== 0) {
         if (editOn) {
-            fbLives.lives.splice(indexOfPrevLive, 0, liveData); //Guarda el live de modo que permanezca en la misma posicion en la que estaba antes de ser modificado
-        } else fbLives.lives.push(liveData);
-    } else
-        clientFuncs.showModal(
-            "Live eliminado",
-            "Al sobreescribir el live sin ningun cliente se elimina de la base de datos"
-        );
+            globalVars.livesObj.lives.splice(indexOfPrevLive, 0, liveData); //Guarda el live de modo que permanezca en la misma posicion en la que estaba antes de ser modificado
+        } else globalVars.livesObj.lives.push(liveData);
+    } else clientFuncs.showModal("Live eliminado", "Al sobreescribir el live sin ningun cliente se elimina de la base de datos");
     /* ------------------------------------------------------------- */
 
     /* Agregar el nuevo objeto a la base de datos */
-    firebase.STORAGE.collection("vendedoras")
+    firebase.FIRESTORE.collection("vendedoras")
         .doc(clientVars.userIdLS)
-        .set(fbLives)
+        .set(globalVars.livesObj)
         .then(() => {
             clearLive();
             open("index.html", "_self");

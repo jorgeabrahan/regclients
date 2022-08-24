@@ -191,6 +191,9 @@ select {
 .settings {
     display: flex;
     gap: 0.5em;
+}
+
+.mb-1 {
     margin-bottom: 1rem;
 }
 

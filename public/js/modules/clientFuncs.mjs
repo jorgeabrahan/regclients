@@ -28,8 +28,7 @@ const createOption = (clientName, id) => {
 };
 const deleteOption = (clientId) => {
     //Se elimina de la lista de clientes para agregar
-    for (let element of document.getElementById("clients").options)
-        element.getAttribute("key") == clientId && element.remove();
+    for (let element of document.getElementById("clients").options) element.getAttribute("key") == clientId && element.remove();
 };
 
 const shwRegistry = (clientId) => {
@@ -56,10 +55,11 @@ const deleteThis = (clientId) => {
     updateAndSave();
 };
 
-const createHtml = (id, clientName, total, articles) => {
+const createHtml = (id, clientName, total, articles, checked) => {
     const divClient = document.createElement("div");
     divClient.className = "table__row";
     divClient.id = id;
+    // console.log(checked);
     divClient.innerHTML = `
         <p>${clientName} (<span class="row__articles">${articles}</span>)</p>
         <p>HNL <span>${globalVars.FORMATTER.format(total)}</span></p>
@@ -90,9 +90,9 @@ const createHtml = (id, clientName, total, articles) => {
     return divClient;
 };
 
-const createNewClient = (id, name, total, articles) => {
+const createNewClient = (id, name, total, articles, checked) => {
     clientVars.clientsDataList.appendChild(createOption(name, id));
-    clientVars.clientsHtmlCnt.appendChild(createHtml(id, name, total, articles));
+    clientVars.clientsHtmlCnt.appendChild(createHtml(id, name, total, articles, checked));
 };
 
 const emptyClients = () => {
@@ -102,8 +102,7 @@ const emptyClients = () => {
 };
 
 const loadClientsFromArr = () => {
-    for (let client of clientVars.clientsArr)
-        createNewClient(client.clientId, client.name, client.total, client.articles);
+    for (let client of clientVars.clientsArr) createNewClient(client.clientId, client.name, client.total, client.articles, client.checked);
 };
 
 const saveClientsLS = () => {
@@ -130,8 +129,8 @@ const updateAndSave = () => {
 };
 
 const showModal = (title, description) => {
-    document.getElementById("modalTitle").textContent = title;
-    document.getElementById("modalDescription").innerText = description;
+    document.getElementById("modalTitle").innerHTML = title;
+    document.getElementById("modalDescription").innerHTML = description;
     document.getElementById("modal").classList.remove("d-none");
 };
 

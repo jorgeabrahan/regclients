@@ -1,12 +1,4 @@
-const WEEK_DAYS = [
-    "Domingo",
-    "Lunes",
-    "Martes",
-    "Miercoles",
-    "Jueves",
-    "Viernes",
-    "Sabado",
-];
+const WEEK_DAYS = ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"];
 const MONTHS = [
     "enero",
     "febrero",
@@ -29,4 +21,7 @@ const FORMATTER = new Intl.NumberFormat("en-US", {
     maximumFractionDigits: 2,
 });
 
-export { WEEK_DAYS, MONTHS, DATE, FORMATTER };
+let livesObj = { lives: [] };
+const setLivesObj = (newLivesObj) => (livesObj = newLivesObj);
+
+export { WEEK_DAYS, MONTHS, DATE, FORMATTER, livesObj, setLivesObj };
