@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="css/general.css" />
+        <link rel="stylesheet" href="css/styles.css" />
+        <link rel="icon" href="./img/regClients.png" />
+
+        <script
+            src="./dist/nuevoRegistro.bundle.js"
+            type="module"
+            defer
+        ></script>
+
+        <title>RegClients - nuevo registro</title>
+    </head>
+    <body class="dark-mode mw-1024 mrgn-hr-auto pdng-hr-1">
+        <header>
+            <div
+                class="pdng-vr-1 d-flex ai-center fjc-space-between fw-wrap gap-0-5"
+            >
+                <a class="d-flex" href="./index.html">
+                    <span class="material-symbols-outlined"
+                        >app_registration</span
+                    >
+                    <span>RegClients</span>
+                </a>
+            </div>
+        </header>
+        <main>
+            <form class="form" id="addF">
+                <div class="d-grid gtc-aft-200px-1fr gap-0-5 mb-0-5">
+                    <label>
+                        <span class="d-inline-block mb-0-2">
+                            Nombre del cliente
+                        </span>
+                        <input
+                            list="clientsOptions"
+                            name="clientName"
+                            id="clientName"
+                            placeholder="ej.: Jorge Abrahan"
+                            maxlength="20"
+                            autocomplete="off"
+                            required
+                        />
+                        <datalist id="clientsOptions" name="clientsOptions"> </datalist>
+                    </label>
+                    <label>
+                        <span class="d-inline-block mb-0-2">
+                            Precio del articulo(s)
+                        </span>
+                        <input
+                            type="number"
+                            name="price"
+                            id="price"
+                            placeholder="ej.: 120"
+                            autocomplete="off"
+                            required
+                        />
+                    </label>
+                    <label>
+                        <span class="d-inline-block mb-0-2">
+                            Cantidad de articulos
+                        </span>
+                        <select name="amount" id="amount">
+                            <option value="1" selected>1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                        </select>
+                    </label>
+                    <label>
+                        <span class="d-inline-block mb-0-2">
+                            Categoría del articulo(s)
+                        </span>
+                        <select name="category" id="category">
+                            <option value="desconocido">
+                                desconocido
+                            </option>
+                        </select>
+                    </label>
+                </div>
+                <p id="addMsg"></p>
+                <button class="btn ml-auto">
+                    <span class="material-symbols-outlined">add</span>Agregar
+                </button>
+            </form>
+            <section class="table print-container mb-1">
+                <p class="ta-right pdng-vr-0-5 fw-600" id="liveDate">
+                    00 de MMMMM del YYYY
+                </p>
+                <header class="table__row table__row--header">
+                    <p>
+                        Nombre (
+                        <span id="clientsAmount" class="table__row--amount">0</span>
+                        )
+                    </p>
+                    <p>Total</p>
+                </header>
+                <div class="mb-0-5" id="clientsCnt"></div>
+                <p class="fs-subtitle fw-900 ta-right">
+                    Total: HNL <span id="liveTotal">0.00</span>
+                </p>
+            </section>
+            <section class="options mb-1">
+                <button class="btn" id="btnClearLive">
+                    <span class="material-symbols-outlined">delete</span>
+                    Limpiar tabla
+                </button>
+                <button class="btn" id="btnPrintLive">
+                    <span class="material-symbols-outlined">print</span>
+                    Imprimir tabla
+                </button>
+                <button class="btn" id="btnSaveLive">
+                    <span class="material-symbols-outlined">save</span>
+                    Guardar y salir
+                </button>
+                <button class="btn d-none" id="btnExitEdit">
+                    <span class="material-symbols-outlined">cancel</span>
+                    Salir edición
+                </button>
+                <button class="btn" id="btnShowShortcuts">
+                    <span class="material-symbols-outlined">keyboard</span>
+                    Mostrar atajos
+                </button>
+            </section>
+        </main>
+
+        <div class="modal pdng-hr-1 d-none" id="modal">
+            <div class="bg-page width-100 mw-425 pdng-1 brdr-round">
+                <div class="d-flex fjc-flex-end">
+                    <span
+                        class="material-symbols-outlined c-pointer"
+                        id="btnCloseM"
+                    >
+                        close
+                    </span>
+                </div>
+                <h2 id="modalTitle"></h2>
+                <p id="modalDescription"></p>
+            </div>
+        </div>
+        <div class="modal pdng-hr-1 d-none" id="registryM">
+            <div class="bg-page width-100 mw-425 pdng-1 brdr-round">
+                <div class="d-flex fjc-flex-end">
+                    <span
+                        class="material-symbols-outlined c-pointer"
+                        onclick="registryM.classList.add('d-none')"
+                    >
+                        close
+                    </span>
+                </div>
+                <h2 class="mb-0-5" id="registryMTitle"></h2>
+                <div class="d-grid gap-0-5 mb-0-5 modal__content--limit" id="registry"></div>
+                <button class="btn ml-auto" id="btnDeleteRegistry">
+                    Eliminar seleccionado(s)
+                </button>
+            </div>
+        </div>
+
+        <div class="modal pdng-hr-1 d-none" id="shortcutsM">
+            <div class="bg-page width-100 mw-1024 pdng-1 brdr-round">
+                <div class="d-flex fjc-flex-end">
+                    <span
+                        class="material-symbols-outlined c-pointer"
+                        onclick="shortcutsM.classList.add('d-none')"
+                    >
+                        close
+                    </span
+                    >
+                </div>
+                <div class="d-grid gtc-aft-150px-1fr gap-1">
+                    <div class="d-flex fd-column ai-center">
+                        <div class="d-flex ai-center gap-0-5">
+                            <img
+                                class="mw-50"
+                                src="img/alt.png"
+                                alt=""
+                            />
+                            <p>+</p>
+                            <img
+                                class="mw-50"
+                                src="img/keyQ.png"
+                                alt=""
+                            />
+                        </div>
+                        <p>Nombre cliente</p>
+                    </div>
+                    <div class="d-flex fd-column ai-center">
+                        <div class="d-flex ai-center gap-0-5">
+                            <img
+                                class="mw-50"
+                                src="img/alt.png"
+                                alt=""
+                            />
+                            <p>+</p>
+                            <img
+                                class="mw-50"
+                                src="img/keyW.png"
+                                alt=""
+                            />
+                        </div>
+                        <p>Costo de prenda</p>
+                    </div>
+                    <div class="d-flex fd-column ai-center">
+                        <div class="d-flex ai-center gap-0-5">
+                            <img
+                                class="mw-50"
+                                src="img/alt.png"
+                                alt=""
+                            />
+                            <p>+</p>
+                            <img
+                                class="mw-50"
+                                src="img/keyC.png"
+                                alt=""
+                            />
+                        </div>
+                        <p>Limpiar tabla</p>
+                    </div>
+                    <div class="d-flex fd-column ai-center">
+                        <div class="d-flex ai-center gap-0-5">
+                            <img
+                                class="mw-50"
+                                src="img/alt.png"
+                                alt=""
+                            />
+                            <p>+</p>
+                            <img
+                                class="mw-50"
+                                src="img/keyG.png"
+                                alt=""
+                            />
+                        </div>
+                        <p>Guardar live</p>
+                    </div>
+                    <div class="d-flex fd-column ai-center">
+                        <div class="d-flex ai-center gap-0-5">
+                            <img
+                                class="mw-50"
+                                src="img/ctrl.png"
+                                alt=""
+                            />
+                            <p>+</p>
+                            <img
+                                class="mw-50"
+                                src="img/keyP.png"
+                                alt=""
+                            />
+                        </div>
+                        <p>Imprimir tabla</p>
+                    </div>
+                </div>
+                <!-- <div class="shortcuts__toggle">
+                    <label class="shortcuts__label">
+                        Habilitar atajos
+                        <input type="checkbox" id="shortcutsToggle" />
+                        <span class="checkmark"></span>
+                    </label>
+                </div> -->
+            </div>
+        </div>
+        <div class="modal pdng-hr-1 d-none" id="editM">
+            <div class="bg-page width-100 mw-425 pdng-1 brdr-round">
+                <div class="d-flex fjc-flex-end">
+                    <span
+                        class="material-symbols-outlined c-pointer"
+                        onclick="editM.classList.add('d-none')"
+                    >
+                        close
+                    </span>
+                </div>
+                <form id="editF">
+                    <label>
+                        <span class="d-inline-block mb-0-2">
+                            Nombre del cliente
+                        </span>
+                        <input
+                            type="text"
+                            class="mb-0-5"
+                            autocomplete="off"
+                            maxlength="20"
+                            name="newName"
+                            id="newName"
+                            placeholder="Ej. Luis Ramirez"
+                            required
+                        />
+                    </label>
+                    <p class="edit__msg" id="editMsg"></p>
+                    <button class="btn ml-auto">Guardar cambios</button>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
