@@ -10,6 +10,7 @@ import { ERRORS, FORMATTER } from '../Global/variables';
 
 const handleDeleteLive = (live: Live) => {
     removeLive(getLiveIndex(live.ID));
+    popup('Eliminando live', 'Espere mientras se elimina el live de la base de datos.');
     saveLivesDB().then(() => {
         location.reload();
     }).catch((err) => {

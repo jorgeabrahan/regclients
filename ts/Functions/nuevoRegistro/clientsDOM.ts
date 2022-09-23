@@ -4,6 +4,7 @@ import { FORMATTER } from "../../Global/variables";
 import createClient from "../../HTML/createClient";
 import createClientOption from "../../HTML/createClientOption";
 import { getIndexByID, remove, saveOnLS } from "./clientsArray";
+import { loadFrequentClients } from "./loadConfig";
 
 
 const getLiveTotal = (): number => {
@@ -36,7 +37,8 @@ const removeByID = (ID: string) => {
 
 const removeAll = () => {
     setClientsLS([]);
-    clientsOptions.textContent = "";
+    clientsOptions.innerHTML = '';
+    loadFrequentClients();
     clientsCnt.innerHTML = "";
 };
 

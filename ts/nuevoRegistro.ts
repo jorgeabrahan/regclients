@@ -63,7 +63,7 @@ window.onload = () => {
     btnClearLive.addEventListener('click', () => {
         const msg = "Se eliminara todo el contenido del live, ¿deseas continuar?";
         if (!confirm(msg)) return;
-        handleClearLive()
+        handleClearLive();
     });
     
     btnPrintLive.addEventListener('click', () => {

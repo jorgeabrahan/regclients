@@ -1,7 +1,5 @@
 import { addF, clientsOptions } from "../../DOM&LS/getFromNuevoRegistro";
-import { getEditMode } from "../../Global/functions";
 import { userConfig } from "../../Global/userConfig"
-import createClientOption from "../../HTML/createClientOption";
 
 const loadCategories = () => {
     const fragment = document.createDocumentFragment();
@@ -9,7 +7,7 @@ const loadCategories = () => {
         const opt = document.createElement('OPTION');
         (opt as HTMLOptionElement).value = cat.category;
         opt.innerText = cat.category;
-        if (cat.isPrincipal) (opt as HTMLOptionElement).selected = true;
+        if (cat.isPrincipal) opt.setAttribute('selected', 'selected');
         fragment.appendChild(opt);
     });
     addF.category.appendChild(fragment);
