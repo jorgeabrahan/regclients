@@ -35,9 +35,9 @@ const createLiveClients = (clients: Client[]) => {
     return clients
         .map(
             ({ name, total }) => `
-        <p class="d-flex fjc-space-between lh-1-8">
+        <p class="table__row--nomargin lh-1-8">
             <span>${name}</span> 
-            <span>HNL ${FORMATTER.format(total)}</span>
+            <span class="d-flex fjc-space-between ff-monospace">L. <span>${FORMATTER.format(total)}</span></span>
         </p>
         `
         )

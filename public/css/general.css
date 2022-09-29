@@ -33,11 +33,27 @@ select {
     cursor: pointer;
 }
 
+.ff-monospace {
+    font-family: monospace;
+}
+.ff-monospace * {
+    font-family: monospace;
+}
+
 .table__row {
+    font-size: 1em;
     display: grid;
-    grid-template-columns: 1fr 110px;
+    grid-template-columns: 1fr 120px;
     gap: 1rem;
     padding: 0.7rem 0.2rem;
+    position: relative;
+}
+.table__row--nomargin {
+    font-size: 1em;
+    display: grid;
+    grid-template-columns: 1fr 120px;
+    gap: 1rem;
+    /* padding: 0.7rem 0.2rem; */
     position: relative;
 }
 @media (min-width: 768px) {

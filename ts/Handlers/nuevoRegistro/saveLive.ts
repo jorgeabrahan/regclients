@@ -2,6 +2,8 @@ import Live from '../../Classes/Live';
 import {
     clientsLS,
     dateLS,
+    getDateLS,
+    getTimeStartLS,
     liveToEdit,
     timeStartLS,
 } from '../../DOM&LS/getFromNuevoRegistro/storage';
@@ -33,9 +35,9 @@ const getTotalArticles = () => {
 };
 
 const newLive = (isEditOn: boolean): Live => {
-    const date = isEditOn ? liveToEdit.date : dateLS;
+    const date = isEditOn ? liveToEdit.date : getDateLS();
     const ID = isEditOn ? liveToEdit.ID : createID();
-    const startTime = isEditOn ? liveToEdit.startTime : timeStartLS;
+    const startTime = isEditOn ? liveToEdit.startTime : getTimeStartLS();
     const endTime = isEditOn ? liveToEdit.endTime : getCurrentTime();
     return new Live(
         date,

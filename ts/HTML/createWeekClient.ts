@@ -7,9 +7,9 @@ const createWeekClient = ({name, articles, total}: Client) => {
     clientDiv.innerHTML = `
         <p class="d-flex fjc-space-between">
             <span>${name}</span>
-            <span>( <span class="table__row--articles">${articles}</span> )</span>
+            <span>[<span class="table__row--articles ff-monospace">${articles}</span>]</span>
         </p>
-        <p>HNL <span>${FORMATTER.format(total)}</span></p>
+        <p class="d-flex fjc-space-between ff-monospace ta-right">L. <span>${FORMATTER.format(total)}</span></p>
     `;
     return clientDiv;
 };

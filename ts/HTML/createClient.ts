@@ -66,9 +66,9 @@ const createClient = (ID: string, name: string, total: number, articles: number,
     clientCnt.innerHTML = `
         <p class="d-flex fjc-space-between">
             <span>${name}</span> 
-            <span>( <span class="table__row--articles">${articles}</span> )</span>
+            <span>[<span class="table__row--articles ff-monospace">${articles}</span>]</span>
         </p>
-        <p>HNL <span class="table__row--total">${FORMATTER.format(total)}</span></p>
+        <p class="d-flex fjc-space-between ta-right ff-monospace">L. <span class="table__row--total">${FORMATTER.format(total)}</span></p>
         <div class="table__row--buttons">
             <button class="btn as-link btnShowRegistry">
                 <span class="material-symbols-outlined">inventory_2</span>
