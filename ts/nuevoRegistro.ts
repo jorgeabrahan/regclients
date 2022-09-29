@@ -25,7 +25,7 @@ import handleEditSubmit from './Forms/Edit/editF';
 import handleAddSubmit from './Forms/Add/addF';
 import handleSaveLive from './Handlers/nuevoRegistro/saveLive';
 import initShortcuts from './Functions/nuevoRegistro/initShortcuts';
-import { loadUserConfigDB, userConfig } from './Global/userConfig';
+import { loadUserConfigDB } from './Global/userConfig';
 import { loadCategories, loadFrequentClients } from './Functions/nuevoRegistro/loadConfig';
 
 window.onload = () => {

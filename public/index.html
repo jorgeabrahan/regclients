@@ -94,7 +94,7 @@
         </div>
         <div class="modal pdng-hr-1 d-none" id="settingsM">
             <div class="bg-page width-100 mw-425 pdng-1 brdr-round">
-                <div class="d-flex fjc-flex-end">
+                <div class="d-flex fjc-flex-end mb-1">
                     <span
                         class="material-symbols-outlined c-pointer"
                         onclick="settingsM.classList.add('d-none')"
@@ -103,6 +103,14 @@
                     </span>
                 </div>
                 <div class="modal__content--limit d-flex fd-column gap-3">
+                    <div>
+                        <button class="btn width-100 fjc-center" id="btnSaveUserConfig">
+                            Guardar ajustes
+                        </button>
+                        <span class="d-block fs-subbody mt-0-5">
+                            Despues de haber realizado los cambios asegurate de guardarlos antes de salir.
+                        </span>
+                    </div>
                     <form id="addCategoryF">
                         <label>
                             <span class="d-block fw-600">
@@ -122,7 +130,7 @@
                                 autocomplete="off"
                             />
                             <p class="lh-1-4 mb-0-5" id="addCategoryMsg"></p>
-                            <button class="btn width-50 fjc-center ml-auto">
+                            <button class="btn fjc-center ml-auto">
                                 Agregar categoría
                             </button>
                         </label>
@@ -157,7 +165,7 @@
                                 autocomplete="off"
                             />
                             <p class="lh-1-4 mb-0-5" id="addFrequentClientMsg"></p>
-                            <button class="btn width-50 ml-auto fjc-center">
+                            <button class="btn ml-auto fjc-center">
                                 Agregar cliente
                             </button>
                         </label>
@@ -181,11 +189,9 @@
                             Habilita o deshabilita los atajos de teclado.
                         </span>
                     </div>
-                    <button class="btn fjc-center ml-auto width-50" id="btnSaveUserConfig">Guardar ajustes</button>
                 </div>
             </div>
         </div>
-
         <div class="login center">
             <form class="width-100 mw-500 pdng-hr-1" id="loginF">
                 <input

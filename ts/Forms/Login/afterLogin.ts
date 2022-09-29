@@ -3,8 +3,11 @@ import {getFirestoreDoc} from "../../Firebase/custom";
 import { WEEK_DAYS, WEEK_DAY_INDEX } from "../../Global/date";
 import { getLives, setLivesObj } from "../../Global/livesObj";
 import popup from "../../Global/popup";
+import { loadUserConfigDB } from "../../Global/userConfig";
 import { FORMATTER } from "../../Global/variables";
 import createLive from "../../HTML/createLive";
+import { showCategoriesUI } from "../AddCategory/addCategoryF";
+import { showFrequentClientsUI } from "../AddFrequentClient/addFrequentClientF";
 import createLivesMergedTable from "./createLivesMergedTable";
 
 const getLiveDayFromDate = (date: string) => date.split(' ')[0];
@@ -81,6 +84,10 @@ const afterLogin = (UID: string) => {
             popup("Error al obtener información", errMsg);
             throw new Error(err);
         });
+    loadUserConfigDB(() => {
+        showCategoriesUI();
+        showFrequentClientsUI();
+    });
 };
 
 export default afterLogin;

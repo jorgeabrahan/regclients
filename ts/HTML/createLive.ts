@@ -2,6 +2,7 @@ import Client from '../Classes/Client';
 import Live from '../Classes/Live';
 import { btnDeleteLives } from '../DOM&LS/getFromIndex';
 import { saveLivesDB } from '../Firebase/custom';
+import { getDateComponents } from '../Global/date';
 import { setEditMode } from '../Global/functions';
 
 import { getLiveIndex, livesObj, removeLive } from '../Global/livesObj';
@@ -47,10 +48,12 @@ const createLive = (live: Live) => {
     const liveSec = document.createElement('SECTION');
     liveSec.className = 'mb-1';
     liveSec.id = live.ID;
+    const date = getDateComponents(live.date); 
+    const liveDate = `${date.day} ${date.dayNum}/${date.monthNum}/${date.year}`;
     liveSec.innerHTML = `
         <div class="d-grid gtc-aft-300px-1fr bg-contrast brdr-round">
             <div class="pdng-1">
-                <h2 class="mb-1">${live.date}</h2>
+                <h2 class="mb-1">${liveDate}</h2>
                 <div>
                     <p class="d-flex fjc-space-between lh-1-8">
                         <span>Duración:</span> 

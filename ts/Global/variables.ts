@@ -60,8 +60,9 @@ const INFO = {
     exitEdit: 'Saliendo del modo edicion sin guardar los cambios realizados.',
 };
 
-const UIDLS = localStorage.getItem('UID') || '';
+let UIDLS = localStorage.getItem('UID') || '';
+const setUID = (UID: string) => UIDLS = UID; 
 
 const WIDTH = document.body.clientWidth;
 
-export { FORMATTER, ERRORS, INFO, UIDLS, WIDTH };
+export { FORMATTER, ERRORS, INFO, UIDLS, setUID, WIDTH };

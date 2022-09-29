@@ -1,7 +1,7 @@
 import FrequentClient from "../../Classes/FrequentClient";
 import { addFrequentClientF, addFrequentClientMsg, frequentClientsCnt } from "../../DOM&LS/getFromIndex";
 import { createID } from "../../Global/functions";
-import { frequentClientExists, getFrequentClientIndex, removeFrequentClient, saveUserConfigDB, setFrequentClient, userConfig } from "../../Global/userConfig";
+import { frequentClientExists, getFrequentClientIndex, removeFrequentClient, setFrequentClient, userConfig } from "../../Global/userConfig";
 import { formatName } from "../validateForms";
 
 const showFrequentClientsUI = () => {

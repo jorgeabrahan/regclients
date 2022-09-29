@@ -1,7 +1,7 @@
 import { loginF, loginFMsg } from '../../DOM&LS/getFromIndex';
 import afterLogin from './afterLogin';
 import { signIn } from '../../Firebase/custom';
-import { ERRORS } from '../../Global/variables';
+import { ERRORS, setUID } from '../../Global/variables';
 import { isAnyInputEmpty } from '../validateForms';
 
 const { mail, pass } = loginF;
@@ -20,6 +20,7 @@ const logUser = () => {
     signIn(mail.value, pass.value)
         .then((UID) => {
             localStorage.setItem('UID', UID);
+            setUID(UID);
             afterLogin(UID);
         })
         .catch((err) => {
