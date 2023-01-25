@@ -10,14 +10,21 @@ const mergeClients = (clients: Client[]) => {
     //Creates new array with clients from all lives merged
     for (let client of clients) {
         const { name, total, articles, registry } = client;
-        const clientRepeated = clientsMerged.find((c) => name === c.name);
-        if (typeof clientRepeated === "undefined") {
+        
+        const repeated = clientsMerged.find((c) => name === c.name);
+        const repeatedIndex = clientsMerged.findIndex((c) => name === c.name);
+
+        if (typeof repeated === "undefined") {
             clientsMerged.push(client);
             continue;
         }
-        clientRepeated.total    += total;
-        clientRepeated.articles += articles;
-        clientRepeated.registry  = [...clientRepeated.registry, ...registry];
+        clientsMerged.push({
+            ...client,
+            total: repeated.total + total,
+            articles: repeated.articles + articles,
+            registry: [...repeated.registry, ...registry]
+        });
+        clientsMerged.splice(repeatedIndex, 1);
     }
 };
 

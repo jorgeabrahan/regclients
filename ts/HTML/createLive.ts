@@ -5,7 +5,7 @@ import { saveLivesDB } from '../Firebase/custom';
 import { getDateComponents } from '../Global/date';
 import { setEditMode } from '../Global/functions';
 
-import { getLiveIndex, livesObj, removeLive } from '../Global/livesObj';
+import { getLiveIndex, getLives, removeLive } from '../Global/livesObj';
 import popup from '../Global/popup';
 import { ERRORS, FORMATTER } from '../Global/variables';
 
@@ -24,7 +24,7 @@ const handleDeleteLive = (live: Live) => {
 const handleEditLive = (ID: string) => {
     setEditMode(true);
     const liveToEdit = JSON.stringify(
-        livesObj.lives.find((live) => live.ID === ID)
+        getLives().find((live) => live.ID === ID)
     );
     if (liveToEdit === undefined) return;
     localStorage.setItem('editLive', liveToEdit);
@@ -102,6 +102,8 @@ const createLive = (live: Live) => {
     });
     const deleteBtn = liveSec.querySelector('button.delete') as HTMLButtonElement;
     deleteBtn.addEventListener('click', () => {
+        const msg = 'Confirme que desea eliminar el live por completo.';
+        if (!confirm(msg)) return;
         handleDeleteLive(live);
     });
     return liveSec;
