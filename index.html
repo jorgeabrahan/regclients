@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="css/general.css" />
+        <link rel="stylesheet" href="css/index.css" />
+        <link rel="stylesheet" href="css/styles.css" />
+        <link rel="icon" href="./img/regClients.png" />
+
+        <script src="./dist/index.bundle.js" type="module" defer></script>
+
+        <title>RegClients</title>
+    </head>
+    <body class="dark-mode mw-1024 mrgn-hr-auto pdng-hr-1">
+        <header>
+            <div
+                class="pdng-vr-1 d-flex ai-center fjc-space-between fw-wrap gap-0-5"
+            >
+                <a class="d-flex" href="./index.html">
+                    <span class="material-symbols-outlined"
+                        >app_registration</span
+                    >
+                    <span>RegClients</span>
+                </a>
+                <div class="d-flex gap-0-5">
+                    <button class="as-link btn" id="btnShowSettings">
+                        <span class="material-symbols-outlined">settings</span>
+                    </button>
+                    <button class="as-link btn d-flex ai-center" id="btnLogout">
+                        <span class="material-symbols-outlined">logout</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+        <main>
+            <section id="livesOptions" class="options mb-1 d-none">
+                <button class="btn" id="btnNewLive">
+                    <span class="material-symbols-outlined">library_add</span>
+                    Nuevo registro
+                </button>
+                <button class="btn" id="btnToggleLivesView">
+                    <span class="material-symbols-outlined">table_rows</span>
+                    Cambiar vista
+                </button>
+                <button class="btn" id="btnDeleteLives">
+                    <span class="material-symbols-outlined">delete</span>
+                    Eliminar todo
+                </button>
+                <button class="btn" id="btnPrintLivesTable" disabled>
+                    <span class="material-symbols-outlined">print</span>
+                    Imprimir tabla
+                </button>
+            </section>
+            <section class="nolives d-none" id="zeroLivesCnt">
+                <img
+                    class="mw-425 width-100 mb-1-5"
+                    src="svg/void.svg"
+                    alt="Create new register"
+                />
+            </section>
+            <section class="lives" id="livesCnt"></section>
+            <div id="livesTablePage" class="d-none">
+                <section
+                    class="table print-container mb-1 d-none"
+                    id="livesTableCnt"
+                >
+                    <header class="table__row table__row--header fw-900">
+                        <p>Nombre ( <span class="table__row--amount" id="weekAmount">0</span> )</p>
+                        <p>Total</p>
+                    </header>
+                    <div id="livesTable"></div>
+                </section>
+                <div id="livesTotalCnt">
+                    <p class="table__total fs-subtitle fw-900 mb-1 ta-right">
+                        Total: HNL <span id="livesTotal">0.00</span>
+                    </p>
+                </div>
+            </div>
+        </main>
+        <div class="modal pdng-hr-1 d-none" id="modal">
+            <div class="bg-page width-100 mw-425 pdng-1 brdr-round">
+                <div class="d-flex fjc-flex-end">
+                    <span
+                        class="material-symbols-outlined c-pointer"
+                        id="btnCloseM"
+                    >
+                        close
+                    </span>
+                </div>
+                <h2 id="modalTitle"></h2>
+                <p id="modalDescription"></p>
+            </div>
+        </div>
+        <div class="modal pdng-hr-1 d-none" id="settingsM">
+            <div class="bg-page width-100 mw-425 pdng-1 brdr-round">
+                <div class="d-flex fjc-flex-end mb-1">
+                    <span
+                        class="material-symbols-outlined c-pointer"
+                        onclick="settingsM.classList.add('d-none')"
+                    >
+                        close
+                    </span>
+                </div>
+                <div class="modal__content--limit d-flex fd-column gap-3">
+                    <div>
+                        <button class="btn width-100 fjc-center" id="btnSaveUserConfig">
+                            Guardar ajustes
+                        </button>
+                        <span class="d-block fs-subbody mt-0-5">
+                            Despues de haber realizado los cambios asegurate de guardarlos antes de salir.
+                        </span>
+                    </div>
+                    <form id="addCategoryF">
+                        <label>
+                            <span class="d-block fw-600">
+                                Agrega una categoría
+                            </span>
+                            <span class="d-block fs-subbody mb-0-5">
+                                Agrega categorías para especificar que tipos
+                                de productos adquieren tus clientes.
+                            </span>
+                            <input
+                                class="mb-0-5"
+                                maxlength="20"
+                                type="text"
+                                name="category"
+                                id="category"
+                                placeholder="ej.: ropa"
+                                autocomplete="off"
+                            />
+                            <p class="lh-1-4 mb-0-5" id="addCategoryMsg"></p>
+                            <button class="btn fjc-center ml-auto">
+                                Agregar categoría
+                            </button>
+                        </label>
+                        <div>
+                            <p class="fw-600">
+                                Categorias agregadas
+                            </p>
+                            <span class="d-block fs-subbody mb-0-5">
+                                Establece una categoria como principal al
+                                dar clic en el nombre, esto la seleccionara
+                                automaticamente al agregar un cliente.
+                            </span>
+                            <div class="d-flex fd-column gap-0-5" id="categoriesCnt">
+                            </div>
+                        </div>
+                    </form>
+                    <form id="addFrequentClientF">
+                        <label>
+                            <span class="d-block fw-600">
+                                Agrega clientes frecuentes
+                            </span>
+                            <span class="d-block fs-subbody mb-0-5">
+                                Agrega el nombre de los clientes que compran
+                                tus productos frecuentemente.
+                            </span>
+                            <input
+                                class="mb-0-5"
+                                type="text"
+                                name="frequentClient"
+                                id="frequentClient"
+                                placeholder="ej.: Jorge Abrahan"
+                                autocomplete="off"
+                            />
+                            <p class="lh-1-4 mb-0-5" id="addFrequentClientMsg"></p>
+                            <button class="btn ml-auto fjc-center">
+                                Agregar cliente
+                            </button>
+                        </label>
+                        <div>
+                            <p class="mb-0-2 fw-600">Clientes agregadas</p>
+                            <div class="d-flex fd-column gap-0-5" id="frequentClientsCnt">
+                            </div>
+                            <span class="d-block fs-subbody mt-0-5">
+                                Los clientes en esta lista se mostraran en
+                                el autocompletado del nombre de clientes al
+                                agregar un registro.
+                            </span>
+                        </div>
+                    </form>
+                    <div>
+                        <label class="d-flex ai-center fjc-space-between p-relative">
+                            <span class="d-inline-block fw-600">Atajos de teclado</span>
+                            <input type="checkbox" name="toggleShortcuts" id="toggleShortcuts">
+                        </label>
+                        <span class="d-block fs-subbody mt-0-5">
+                            Habilita o deshabilita los atajos de teclado.
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="login center">
+            <form class="width-100 mw-500 pdng-hr-1" id="loginF">
+                <input
+                    class="mb-0-5"
+                    type="email"
+                    name="mail"
+                    id="mail"
+                    placeholder="Ingresa tu correo"
+                    required
+                />
+                <input
+                    class="mb-0-5"
+                    type="password"
+                    name="pass"
+                    id="pass"
+                    placeholder="Ingresa tu contraseña"
+                    required
+                />
+                <p id="loginFMsg"></p>
+                <button class="d-block ml-auto">Iniciar sesión</button>
+            </form>
+        </div>
+    </body>
+</html>
