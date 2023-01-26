@@ -28,7 +28,7 @@ const handleEditLive = (ID: string) => {
     );
     if (liveToEdit === undefined) return;
     localStorage.setItem('editLive', liveToEdit);
-    window.location.href = './nuevo-registro.html';
+    window.location.href = './manage-registry.html';
 };
 
 const createLiveClients = (clients: Client[]) => {

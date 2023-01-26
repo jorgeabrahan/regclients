@@ -2,7 +2,7 @@ import { goTo, setEditMode } from '../../Global/functions';
 
 const handleNewLive = () => {
     setEditMode(false);
-    goTo('./nuevo-registro.html');
+    goTo('./manage-registry.html');
 };
 
 const handleLogout = () => {
