@@ -1,10 +1,13 @@
 {
+    "homepage": "https://jorgeabrahan.github.io/regclients",
     "dependencies": {
-        "firebase": "^9.9.4"
+        "firebase": "^9.9.4",
+        "gh-pages": "^5.0.0"
     },
     "scripts": {
         "webpack": "webpack",
         "webpack:watch": "webpack -w"
+        "deploy": "gh-pages -d public"
     },
     "devDependencies": {
         "ts-loader": "^9.3.1",
