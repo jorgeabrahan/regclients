@@ -6,7 +6,7 @@
     },
     "scripts": {
         "webpack": "webpack",
-        "webpack:watch": "webpack -w"
+        "webpack:watch": "webpack -w",
         "deploy": "gh-pages -d public"
     },
     "devDependencies": {
